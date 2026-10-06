@@ -6,4 +6,9 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     role VARCHAR(50) NOT NULL
+    two_factor_code VARCHAR(10),
+    two_factor_expires TIMESTAMP,
+    reset_token VARCHAR(255),
+    reset_token_expires TIMESTAMP,
+    failed_login_attempts INTEGER NOT NULL DEFAULT 0
 );
