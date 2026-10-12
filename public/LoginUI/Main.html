@@ -9,17 +9,22 @@
 </head>
 <body>
     <div class="box">
-      <h1><img src="MyPAWsREDO.jpg"></h1>
+      <!--<h1><img src="C:\Users\alvar\OneDrive\Desktop\Paws UI\MyPAWsREDO.jpg" alt="PAWphoto" usemap="#PAW" height="300" width="350"></h1>-->
+      <img src="MyPAWsREDO.jpg" usemap="#image-map">
+        <map name="image-map">
+            <area target="" alt="Home" title="Home" href="https://www.csusb.edu/" coords="0,2,338,428" shape="rect">
+            <area target="" alt="" title="" href="" coords="" shape="0">
+        </map>
+        
         <form class="Input-form">
-            <label>Username</label>
-            <input class="Textbox1" type="text" placeholder="Username">
-            <label>Password </label>
-            <input class="Textbox2" type="password" placeholder="Password">
-            <a class="ForgotPassword" href="/LoginUI/forgotPassword.html">Forgot Password?</a>
+            <label class="label"> ID: </label>
+            <input class="Textbox1" type="text" placeholder="###########">
+            <label class="label">Password:</label>
+            <input class="Textbox2" type="password" placeholder="*********">
             <a href="#"><button class="Login" >Login</button></a>
-            <a href="https://www.csusb.edu/"><button class="Cancel">Cancel</button></a>
-        <!-- <a href="registration.html" target="_blank">New User?</a> -->
         </form>
+       <!-- <a href="https://www.csusb.edu/"><button class="Cancel">Cancel</button></a> -->
+        <a href="#" target="_blank"><button class="Login">Forgot Password?</button></a>
     </div>
     <script src="Login.js" defer></script>
 </body>

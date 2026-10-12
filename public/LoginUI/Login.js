@@ -3,11 +3,11 @@ const form = document.querySelector(".Input-form");
 form.addEventListener("submit", async function(event) {
     event.preventDefault();
 
-    const userID = document.querySelector(".Textbox1").value;
+    const email = document.querySelector(".Textbox1").value;
     const password = document.querySelector(".Textbox2").value;
 
     const userData = {
-        id: userID,
+        email: email,
         password: password
     };
 
@@ -25,6 +25,7 @@ form.addEventListener("submit", async function(event) {
         if (response.ok) {
             console.log("Login successful");
             console.log(data.user);
+            window.location.href = "/LoginUI/RunDegreeAudit.html";
         } else {
             console.log("Login failed:", data.error);
 

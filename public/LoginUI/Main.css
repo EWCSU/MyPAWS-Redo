@@ -22,6 +22,7 @@ body {
         background-color: #6e91dc;
         padding: 10px;
         border-radius: 5px;
+        color: #000301;
       }
       .Textbox2{
         background-color: #6e91dc;
@@ -88,15 +89,6 @@ body {
         border: none;
         width: 25%;
       }
-      .ForgotPassword {
-        margin-bottom: 10px;
-        text-align: center;
-        margin-left: 5px;
-        padding: 5px 10px;
-        border-radius: 10px;
-        border: none;
-        width: 25%;
-      } 
       .Login{
         margin-bottom: 10px;
         text-align: center;
@@ -105,6 +97,10 @@ body {
         border-radius: 10px;
         border: none;
         width: 25%;
+      }
+      .label{
+        color: #000301;
+        font-weight: 900;
       }
       
       
