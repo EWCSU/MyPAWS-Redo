@@ -1,0 +1,101 @@
+body {
+        margin: 0;
+        padding: 0;
+        background-color: #6e91dc;
+        height: 100vh;
+        justify-content: center;
+      }
+
+      .box {
+        position: absolute;
+        align-items: center;
+        text-align: center;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50%;
+        background:white;
+        border-radius: 20px;
+        box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.05);
+      }
+      .Textbox1{
+        background-color: #6e91dc;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .Textbox2{
+        background-color: #6e91dc;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .Input-form{
+        width: 70%;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 10px;
+        border-radius: 10px;
+      }
+      input:focus{
+        background-color: #e4e2ee;
+       }
+       .Login:hover{
+        background-color: #d7d2d7;
+       }
+       .Cancel:hover{
+        background-color: #d7d2d7;
+       }
+    
+      .box h1 {
+        text-align: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 20px 0;
+        background-color: #d7d2f2;
+        border-bottom: 1px solid silver;
+      }
+      .top {
+        list-style-type: none;
+        align-items: center;
+        display: flex;
+        justify-content: space-around;
+      }
+      ul.top > li a {
+        text-decoration: none;
+        background-image: linear-gradient( #030305, #1004b9, #000301);
+        color: #ffffff;
+        padding: 5px 10px;
+        border-radius: 10px;
+      }
+      input{
+        margin-bottom: 3px;
+        border-radius: 5px;
+        padding: 5px;
+        text-align: center;
+      }
+      form{
+        display: flex;
+        flex-direction: column;
+        width: 100px;
+        margin-left: 100px;
+        
+      }
+      .Cancel{
+        margin-bottom: 10px;
+        text-align: center;
+        padding: 5px 10px;
+        border-radius: 10px;
+        border: none;
+        width: 25%;
+      }
+      .Login{
+        margin-bottom: 10px;
+        text-align: center;
+        margin-left: 5px;
+        padding: 5px 10px;
+        border-radius: 10px;
+        border: none;
+        width: 25%;
+      }
+      
+      

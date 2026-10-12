@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comments</title>
+    <link rel="icon"type="image/png"  href="C:\Users\alvar\OneDrive\Desktop\CSE4500(New)\Image\CSUSB-logo-2.png">
+    <link rel="stylesheet" href="C:\Users\alvar\OneDrive\Desktop\Paws UI\RunDegree.Audit.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <li>
+                <div class="dropdown">
+                    <button onclick="myFunction()" class="dropbtn">PAWS</button>
+                        <div id="myDropdown" class="dropdown-content">
+                        <a href="RunDegreeAudit.html">Request New PAWS</a>
+                        <a href="#">Manage PAWS</a>
+                        </div>
+                </div> 
+            </li>
+            <li><a href="#">myCAPs</a></li>
+            <li><a href="#">Schedule Builder</a></li>
+            <li><a href="https://www.csusb.edu/advising/advising-tools/undergraduate-roadmaps">UGRD Roadmaps</a></li>
+            <li><a href="Comments.html">Comments</a></li>
+            <li><a href="Comments.html"><button class="ComButton">Comments</button></li> </a>
+            <!-- <li><button class="login-button">Login</button></li> -->
+        </div>
+        <div class="main">Comments
+            <p>
+                Leave a comment!
+            </p>
+        </div>
+        <div class="footer">
+            <footer>
+                <p>
+
+                    Download <a href="https://get.adobe.com/reader/">Adobe Reader</a>  to view documents marked PDF
+                    Copyright &copy; 2025 <a href="https://collegesource.com/">CollegeSource, Inc.</a> All Rights Reserved. selfservice Version: 5.2.3 - 03/03/2026 10:35 AM This product is licensed to California State University San Bernardino Main Campus - [Csu]
+                    <a href="https://collegesource.com/privacy-policy/">Privacy Policy</a>
+                </p>
+            </footer>
+        </div>
+
+
+    </div>
+</body>
+<script>
+/* When the user clicks on the button, 
+toggle between hiding and showing the dropdown content */
+function myFunction() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+</script>
+</html>
