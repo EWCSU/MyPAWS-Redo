@@ -6,6 +6,9 @@ const { PrismaClient } = require('@prisma/client');
 
 const requireAuth = require('../middleware/requireAuth');
 
+const crypto = require('crypto'); // built into node tht gives us a random # generator
+const { sendVerificationCode } = require('../utils/mailer'); // imports the email function
+
 const router = express.Router();
 const prisma = new PrismaClient();
 
@@ -18,6 +21,14 @@ const loginLimiter = rateLimit({
   max: 20,
   message: { error: 'Too many login attempts, please try again later.' },
 });
+
+const verifyLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { error: 'Too many attempts, please try again later.' },
+});
+
+const CODE_EXPIRY_MS = 10 * 60 * 1000; // 10 minutes
 
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -90,9 +101,58 @@ router.post('/login', loginLimiter, async (req, res) => {
       return genericFail();
     }
 
+    // Password is correct: generate a 6-digit code instead of logging in right away
+    const code = crypto.randomInt(100000, 1000000).toString();
+    const codeHash = await bcrypt.hash(code, 10);
+
     await prisma.user.update({
       where: { id: user.id },
-      data: { failedLoginAttempts: 0, lockedUntil: null },
+      data: {
+        failedLoginAttempts: 0,
+        lockedUntil: null,
+        twoFactorCode: codeHash,
+        twoFactorExpires: new Date(Date.now() + CODE_EXPIRY_MS),
+      },
+    });
+
+    try {
+      await sendVerificationCode(user.email, code);
+    } catch (mailErr) {
+      console.error('Email send error:', mailErr);
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { twoFactorCode: null, twoFactorExpires: null },
+      });
+      return res.status(500).json({ error: 'Could not send verification code.' });
+    }
+
+    return res.json({ requiresVerification: true, email: user.email });
+  } catch (err) {
+    console.error('Login error:', err);
+    return res.status(500).json({ error: 'Something went wrong.' });
+  }
+});
+
+router.post('/verify-code', verifyLimiter, async (req, res) => {
+  try {
+    const { email, code } = req.body;
+    if (!email || !code) {
+      return res.status(400).json({ error: 'Email and code are required.' });
+    }
+
+    const user = await prisma.user.findUnique({ where: { email } });
+    const failure = () => res.status(401).json({ error: 'Invalid or expired code.' });
+
+    if (!user || !user.twoFactorCode || !user.twoFactorExpires) return failure();
+    if (user.twoFactorExpires < new Date()) return failure();
+
+    const codeMatches = await bcrypt.compare(String(code), user.twoFactorCode);
+    if (!codeMatches) return failure();
+
+    // Code is valid: clear it so it can't be reused, then log the user in
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { twoFactorCode: null, twoFactorExpires: null },
     });
 
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '2h' });
@@ -106,7 +166,7 @@ router.post('/login', loginLimiter, async (req, res) => {
 
     return res.json({ user: { id: user.id, email: user.email } });
   } catch (err) {
-    console.error('Login error:', err);
+    console.error('Verify error:', err);
     return res.status(500).json({ error: 'Something went wrong.' });
   }
 });
