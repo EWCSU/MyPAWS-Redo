@@ -23,6 +23,10 @@ app.get('/', (req, res) => {
   res.send('Login API is running.');
 });
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(PORT, (err) => {
+  if (err) {
+    console.error('Server failed to start:', err.message);
+    process.exit(1);
+  }
   console.log(`Server listening on http://localhost:${PORT}`);
 });
