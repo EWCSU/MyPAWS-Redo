@@ -38,44 +38,17 @@ function isValidPassword(password) {
   return typeof password === 'string' && password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
 }
 
-router.post('/register', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!email || !password || !isValidEmail(email)) {
-      return res.status(400).json({ error: 'A valid email and password are required.' });
-    }
-    if (!isValidPassword(password)) {
-      return res.status(400).json({ error: 'Password must be at least 8 characters and include a letter and a number.' });
-    }
-
-    const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) {
-      return res.status(409).json({ error: 'Unable to create account with those details.' });
-    }
-
-    const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
-
-    const user = await prisma.user.create({
-      data: { email, passwordHash },
-      select: { id: true, email: true, createdAt: true },
-    });
-
-    return res.status(201).json({ user });
-  } catch (err) {
-    console.error('Register error:', err);
-    return res.status(500).json({ error: 'Something went wrong.' });
-  }
-});
 
 router.post('/login', loginLimiter, async (req, res) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { username, password } = req.body;
+    if (!username || !password) {
       return res.status(400).json({ error: 'Invalid credentials.' });
     }
 
+    const email = toEmail(username);
     const user = await prisma.user.findUnique({ where: { email } });
+    
     const genericFail = () => res.status(401).json({ error: 'Invalid credentials.' });
 
     if (!user) return genericFail();
@@ -112,6 +85,13 @@ router.post('/login', loginLimiter, async (req, res) => {
         lockedUntil: null,
         twoFactorCode: codeHash,
         twoFactorExpires: new Date(Date.now() + CODE_EXPIRY_MS),
+        onst STUDENT_EMAIL_DOMAIN = process.env.STUDENT_EMAIL_DOMAIN || 'coyote.csusb.edu';
+
+// "domain" becomes "domain@coyote.csusb.edu". Full emails pass through unchanged.
+function toEmail(username) {
+  const value = String(username || '').trim().toLowerCase();
+  return value.includes('@') ? value : `${value}@${STUDENT_EMAIL_DOMAIN}`;
+}
       },
     });
 

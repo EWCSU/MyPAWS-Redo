@@ -24,11 +24,11 @@ loginForm.addEventListener("submit", async function(event) {
     event.preventDefault();
     messageEl.textContent = "";
 
-    const email = document.getElementById("email").value.trim();
+    const email = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value;
 
     try {
-        const result = await postJSON("/api/auth/login", { email: email, password: password });
+        const result = await postJSON("/api/auth/login", { username: username, password: password });
 
         if (!result.ok) {
             messageEl.textContent = result.data.error || "Login failed.";
