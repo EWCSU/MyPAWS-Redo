@@ -9,23 +9,22 @@
 </head>
 <body>
     <div class="box">
-      <h1><img src="MyPAWsREDO.jpg"></h1>
-        <form class="Input-form" id="loginForm">
-    <label>Email</label>
-    <input class="Textbox1" id="email" type="email" placeholder="Email" required>
-    <label>Password </label>
-    <input class="Textbox2" id="password" type="password" placeholder="Password" required>
-    <button class="Login" type="submit">Login</button>
-    <a href="https://www.csusb.edu/"><button class="Cancel" type="button">Cancel</button></a>
-</form>
-
-<form class="Input-form" id="codeForm" style="display:none;">
-    <label>Verification code</label>
-    <input class="Textbox1" id="code" type="text" inputmode="numeric" maxlength="6" placeholder="6-digit code" required>
-    <button class="Login" type="submit">Verify</button>
-</form>
-
-<p id="message"></p>
+      <!--<h1><img src="C:\Users\alvar\OneDrive\Desktop\Paws UI\MyPAWsREDO.jpg" alt="PAWphoto" usemap="#PAW" height="300" width="350"></h1>-->
+      <img src="MyPAWsREDO.jpg" usemap="#image-map">
+        <map name="image-map">
+            <area target="" alt="Home" title="Home" href="https://www.csusb.edu/" coords="0,2,338,428" shape="rect">
+            <area target="" alt="" title="" href="" coords="" shape="0">
+        </map>
+        
+        <form class="Input-form">
+            <label class="label"> ID: </label>
+            <input class="Textbox1" type="text" placeholder="###########">
+            <label class="label">Password:</label>
+            <input class="Textbox2" type="password" placeholder="*********">
+            <a href="#"><button class="Login" >Login</button></a>
+        </form>
+       <!-- <a href="https://www.csusb.edu/"><button class="Cancel">Cancel</button></a> -->
+        <a href="#" target="_blank"><button class="Login">Forgot Password?</button></a>
     </div>
     <script src="Login.js" defer></script>
 </body>

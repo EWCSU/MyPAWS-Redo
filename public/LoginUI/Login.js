@@ -9,30 +9,33 @@ const REDIRECT_AFTER_LOGIN = "RunDegreeAudit.html";
 // Remembers which email we sent a code to, between step 1 and step 2
 let pendingEmail = "";
 
-async function postJSON(url, body) {
-    const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-    });
-    const data = await response.json();
-    return { ok: response.ok, data: data };
-}
+    const email = document.querySelector(".Textbox1").value;
+    const password = document.querySelector(".Textbox2").value;
 
-// Step 1: email + password
-loginForm.addEventListener("submit", async function(event) {
-    event.preventDefault();
-    messageEl.textContent = "";
-
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
+    const userData = {
+        email: email,
+        password: password
+    };
 
     try {
-        const result = await postJSON("/api/auth/login", { email: email, password: password });
+        const response = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(userData)
+        });
 
-        if (!result.ok) {
-            messageEl.textContent = result.data.error || "Login failed.";
-            return;
+        const data = await response.json();
+
+        if (response.ok) {
+            console.log("Login successful");
+            console.log(data.user);
+            window.location.href = "/LoginUI/RunDegreeAudit.html";
+        } else {
+            console.log("Login failed:", data.error);
+
+            alert(data.error)
         }
 
         if (result.data.requiresVerification) {

@@ -22,6 +22,7 @@ body {
         background-color: #6e91dc;
         padding: 10px;
         border-radius: 5px;
+        color: #000301;
       }
       .Textbox2{
         background-color: #6e91dc;
@@ -96,6 +97,10 @@ body {
         border-radius: 10px;
         border: none;
         width: 25%;
+      }
+      .label{
+        color: #000301;
+        font-weight: 900;
       }
       
       
