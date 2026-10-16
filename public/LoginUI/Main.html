@@ -9,20 +9,29 @@
 </head>
 <body>
     <div class="box">
-      <!--<h1><img src="C:\Users\alvar\OneDrive\Desktop\Paws UI\MyPAWsREDO.jpg" alt="PAWphoto" usemap="#PAW" height="300" width="350"></h1>-->
+              <!--<h1><img src="C:\Users\alvar\OneDrive\Desktop\Paws UI\MyPAWsREDO.jpg" alt="PAWphoto" usemap="#PAW" height="300" width="350"></h1>-->
       <img src="MyPAWsREDO.jpg" usemap="#image-map">
         <map name="image-map">
             <area target="" alt="Home" title="Home" href="https://www.csusb.edu/" coords="0,2,338,428" shape="rect">
             <area target="" alt="" title="" href="" coords="" shape="0">
         </map>
-        
-        <form class="Input-form">
+
+        <form class="Input-form" id="loginForm">
             <label class="label"> ID: </label>
-            <input class="Textbox1" type="text" placeholder="###########">
+            <input class="Textbox1" id="username" type="text" autocomplete="username" placeholder="###########" required>
             <label class="label">Password:</label>
-            <input class="Textbox2" type="password" placeholder="*********">
-            <a href="#"><button class="Login" >Login</button></a>
+            <input class="Textbox2" id="password" type="password" placeholder="*********" required>
+            <button class="Login" type="submit">Login</button>
         </form>
+
+        <form class="Input-form" id="codeForm" style="display:none;">
+            <label class="label">Verification code:</label>
+            <input class="Textbox1" id="code" type="text" inputmode="numeric" maxlength="6" placeholder="6-digit code" required>
+            <button class="Login" type="submit">Verify</button>
+        </form>
+
+        <p id="message"></p>
+
        <!-- <a href="https://www.csusb.edu/"><button class="Cancel">Cancel</button></a> -->
         <a href="#" target="_blank"><button class="Login">Forgot Password?</button></a>
     </div>

@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/auth');
 
 const app = express();
+app.set('trust proxy', 1)
 
 app.use(helmet());
 app.use(cors({

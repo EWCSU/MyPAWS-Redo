@@ -11,32 +11,26 @@ let pendingEmail = "";
 
     const email = document.querySelector(".Textbox1").value;
     const password = document.querySelector(".Textbox2").value;
+async function postJSON(url, body) {
+    const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+    });
+    const data = await response.json();
+    return { ok: response.ok, data: data };
+}
+// Step 1: email + password
+loginForm.addEventListener("submit", async function(event) {
+    event.preventDefault();
+    messageEl.textContent = "";
 
-    const userData = {
-        email: email,
-        password: password
-    };
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
 
     try {
-        const response = await fetch("/api/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(userData)
-        });
+        const result = await postJSON("/api/auth/login", { username: username, password: password });
 
-        const data = await response.json();
-
-        if (response.ok) {
-            console.log("Login successful");
-            console.log(data.user);
-            window.location.href = "/LoginUI/RunDegreeAudit.html";
-        } else {
-            console.log("Login failed:", data.error);
-
-            alert(data.error)
-        }
 
         if (result.data.requiresVerification) {
             pendingEmail = result.data.email;
