@@ -9,6 +9,8 @@ const REDIRECT_AFTER_LOGIN = "RunDegreeAudit.html";
 // Remembers which email we sent a code to, between step 1 and step 2
 let pendingEmail = "";
 
+    const email = document.querySelector(".Textbox1").value;
+    const password = document.querySelector(".Textbox2").value;
 async function postJSON(url, body) {
     const response = await fetch(url, {
         method: "POST",
@@ -18,7 +20,6 @@ async function postJSON(url, body) {
     const data = await response.json();
     return { ok: response.ok, data: data };
 }
-
 // Step 1: email + password
 loginForm.addEventListener("submit", async function(event) {
     event.preventDefault();
@@ -30,10 +31,6 @@ loginForm.addEventListener("submit", async function(event) {
     try {
         const result = await postJSON("/api/auth/login", { username: username, password: password });
 
-        if (!result.ok) {
-            messageEl.textContent = result.data.error || "Login failed.";
-            return;
-        }
 
         if (result.data.requiresVerification) {
             pendingEmail = result.data.email;
