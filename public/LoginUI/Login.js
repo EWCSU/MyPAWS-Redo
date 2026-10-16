@@ -24,7 +24,7 @@ loginForm.addEventListener("submit", async function(event) {
     event.preventDefault();
     messageEl.textContent = "";
 
-    const email = document.getElementById("username").value.trim();
+    const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value;
 
     try {

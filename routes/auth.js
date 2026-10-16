@@ -29,7 +29,13 @@ const verifyLimiter = rateLimit({
 });
 
 const CODE_EXPIRY_MS = 10 * 60 * 1000; // 10 minutes
+const STUDENT_EMAIL_DOMAIN = process.env.STUDENT_EMAIL_DOMAIN || 'coyote.csusb.edu';
 
+// "Student ID" becomes "StudentID@coyote.csusb.edu". Full emails pass through unchanged.
+function toEmail(username) {
+  const value = String(username || '').trim().toLowerCase();
+  return value.includes('@') ? value : `${value}@${STUDENT_EMAIL_DOMAIN}`;
+}
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -85,13 +91,6 @@ router.post('/login', loginLimiter, async (req, res) => {
         lockedUntil: null,
         twoFactorCode: codeHash,
         twoFactorExpires: new Date(Date.now() + CODE_EXPIRY_MS),
-        onst STUDENT_EMAIL_DOMAIN = process.env.STUDENT_EMAIL_DOMAIN || 'coyote.csusb.edu';
-
-// "domain" becomes "domain@coyote.csusb.edu". Full emails pass through unchanged.
-function toEmail(username) {
-  const value = String(username || '').trim().toLowerCase();
-  return value.includes('@') ? value : `${value}@${STUDENT_EMAIL_DOMAIN}`;
-}
       },
     });
 
