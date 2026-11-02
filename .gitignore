@@ -1,0 +1,14 @@
+node_modules/
+.env
+*.log
+.DS_Store
+dist/
+build/
+# Additional environment files
+.env.*
+!.env.example
+
+# Private student test data and backups
+*.zip
+*.bak
+private-data/
