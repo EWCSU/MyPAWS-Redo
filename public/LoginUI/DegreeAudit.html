@@ -76,13 +76,36 @@
       color: #0065BD;
     }
 
-    .status {
-      display: block;
-      font-size: 12px;
-      font-weight: 400;
-      color: #64748B;
-      margin-top: 6px;
-    }
+
+.status {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 8px;
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+
+.status.satisfied {
+  background: #E8F5E9;
+  color: #176534;
+}
+
+.status.not-satisfied {
+  background: #FDECEC;
+  color: #A11D25;
+}
+
+.status.pending {
+  background: #E8F1FD;
+  color: #195AA5;
+}
+
+.status.unknown {
+  background: #EEF1F5;
+  color: #475569;
+}
+
 
     .course {
       background: #F5F7FB;
@@ -101,6 +124,39 @@
       header { padding: 18px 24px; }
       .card { padding: 18px; }
     }
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin: 20px 0;
+}
+
+.summary-stat {
+  background: #F5F7FB;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 18px;
+}
+
+.summary-stat span {
+  display: block;
+  color: #64748B;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.summary-stat strong {
+  font-size: 30px;
+  color: #192B40;
+}
+
+@media (max-width: 700px) {
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
   </style>
 
   <script src="DegreeAudit.js" defer></script>
@@ -123,6 +179,36 @@
       <p id="auditDate" class="muted"></p>
       <p id="requirementCount"></p>
     </section>
+
+<section class="card" aria-labelledby="summaryHeading">
+  <h2 id="summaryHeading">Degree Requirement Summary</h2>
+
+  <div class="summary-grid">
+    <div class="summary-stat">
+      <span>Satisfied</span>
+      <strong id="satisfiedCount">—</strong>
+    </div>
+
+    <div class="summary-stat">
+      <span>Pending</span>
+      <strong id="pendingCount">—</strong>
+    </div>
+
+    <div class="summary-stat">
+      <span>Not Satisfied</span>
+      <strong id="notSatisfiedCount">—</strong>
+    </div>
+
+    <div class="summary-stat">
+      <span>Other / Unverified</span>
+      <strong id="unverifiedCount">—</strong>
+    </div>
+  </div>
+
+  <p class="muted" id="summaryNote">
+    Loading requirement summary...
+  </p>
+</section>
 
     <section aria-labelledby="requirementsHeading">
       <h2 id="requirementsHeading">Degree Requirements</h2>

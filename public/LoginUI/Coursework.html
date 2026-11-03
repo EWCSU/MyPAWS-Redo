@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Coursework | MyPAWS Redo</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #F5F7FB;
+      color: #192B40;
+    }
+
+    header {
+      background: #003C69;
+      padding: 20px 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+    }
+
+    header a { color: white; text-decoration: none; }
+
+    main {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 24px;
+    }
+
+    h1 { margin-bottom: 8px; }
+    h2 { font-size: 18px; }
+
+    .muted { color: #64748B; }
+
+    .card {
+      background: white;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 20px 0;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .stat {
+      background: #F5F7FB;
+      padding: 18px;
+      border-radius: 10px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 28px;
+      margin-top: 8px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    input, select {
+      padding: 12px;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      font: inherit;
+      background: white;
+      color: #192B40;
+    }
+
+    input { flex: 1; min-width: 180px; }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 14px 12px;
+      border-bottom: 1px solid #E2E8F0;
+    }
+
+    th {
+      background: #F5F7FB;
+      color: #475569;
+    }
+
+    .error { color: #B42318; }
+
+    @media (max-width: 650px) {
+      .stats { grid-template-columns: 1fr; }
+      main { margin-top: 24px; }
+    }
+  </style>
+  <script src="Coursework.js" defer></script>
+</head>
+<body>
+  <header>
+    <strong>myPAWS REDO</strong>
+    <a href="StudentDashboard.html">Dashboard</a>
+  </header>
+
+  <main>
+    <p class="muted">STUDENT PORTAL / COURSEWORK</p>
+    <h1>My Coursework</h1>
+    <p class="muted" id="auditInfo">Loading your coursework...</p>
+
+    <section class="card">
+      <h2>Coursework Overview</h2>
+
+      <div class="stats">
+        <div class="stat">
+          Letter-Graded
+          <strong id="letterCount">—</strong>
+        </div>
+
+        <div class="stat">
+          In Progress
+          <strong id="progressCount">—</strong>
+        </div>
+
+        <div class="stat">
+          Other Results
+          <strong id="otherCount">—</strong>
+        </div>
+      </div>
+
+      <p class="muted">
+        Letter-graded courses are not necessarily
+        completed or approved toward graduation.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Course Records</h2>
+
+      <div class="filters">
+        <input id="search" type="search"
+               placeholder="Search courses..."
+               aria-label="Search courses">
+
+        <select id="filter" aria-label="Filter coursework">
+          <option value="all">All Courses</option>
+          <option value="letterGraded">Letter-Graded</option>
+          <option value="inProgress">In Progress</option>
+          <option value="otherResults">Other Results</option>
+        </select>
+      </div>
+
+      <p class="muted" id="resultCount"
+         role="status" aria-live="polite">
+        Loading...
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Course</th>
+              <th>Title</th>
+              <th>Term Code</th>
+              <th>Grade</th>
+              <th>Units</th>
+              <th>Category</th>
+            </tr>
+          </thead>
+          <tbody id="courseRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="muted">
+      Demonstration records only. Course codes and terms
+      are shown as provided by the school.
+    </p>
+  </main>
+</body>
+</html>

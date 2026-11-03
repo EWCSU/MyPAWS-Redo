@@ -42,6 +42,7 @@ model StudentRecord {
   user         User?    @relation(fields: [userId], references: [id])
 
   degreeAudits DegreeAudit[]
+  academicPlan AcademicPlan?
 
   @@map("student_records")
 }
@@ -131,4 +132,35 @@ model AllowedCourseRule {
 
   @@unique([subrequirementId, sourceIntSeqNo])
   @@map("allowed_course_rules")
+}
+
+model AcademicPlan {
+  id              String        @id @default(uuid())
+  studentRecordId String        @unique
+  studentRecord   StudentRecord @relation(fields: [studentRecordId], references: [id])
+
+  courses   PlannedCourse[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("academic_plans")
+}
+
+model PlannedCourse {
+  id             String       @id @default(uuid())
+  academicPlanId String
+  academicPlan   AcademicPlan @relation(fields: [academicPlanId], references: [id], onDelete: Cascade)
+
+  courseCode  String
+  courseTitle String?
+  term        String
+  year        Int
+  notes       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([academicPlanId, courseCode, term, year])
+  @@index([academicPlanId, year, term])
+  @@map("planned_courses")
 }

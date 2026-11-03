@@ -8,6 +8,7 @@ const authRoutes = require('./routes/auth');
 
 const app = express();
 const studentRoutes = require("./routes/student");
+const mycapsRoutes = require("./routes/mycaps");
 
 app.use(helmet());
 app.use(cors({
@@ -25,6 +26,7 @@ app.post('/api/auth/register', (req, res) => {
 });
 app.use('/api/auth', authRoutes);
 app.use("/api/student", studentRoutes);
+app.use("/api/mycaps", mycapsRoutes);
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {

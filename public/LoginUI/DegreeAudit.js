@@ -24,9 +24,43 @@ function formatDate(value) {
   });
 }
 
+
 function statusText(code) {
-  return "Source status: " + (code || "Not provided");
+  const status = String(code ?? "").trim().toUpperCase();
+
+  const labels = {
+    C: "Satisfied",
+    I: "In Progress / Pending",
+    N: "Not Satisfied"
+  };
+
+  if (labels[status]) {
+    return `${labels[status]} (Source: ${status})`;
+  }
+
+  if (!status) {
+    return "Status not provided";
+  }
+
+  return `Source status: ${status} (Not yet interpreted)`;
 }
+
+
+function statusClass(code) {
+  const status = String(code ?? "").trim().toUpperCase();
+
+  switch (status) {
+    case "C":
+      return "satisfied";
+    case "N":
+      return "not-satisfied";
+    case "I":
+      return "pending";
+    default:
+      return "unknown";
+  }
+}
+
 
 function createCourse(course) {
   const row = element("div", "course");
@@ -77,8 +111,11 @@ function createSubrequirement(sub) {
       sub.displayTitle || sub.title ||
           "Subrequirement " + sub.sourceStabx
     ),
-    element("span", "status",
-      statusText(sub.satisfiedCode))
+element(
+  "span",
+  "status " + statusClass(sub.satisfiedCode),
+  statusText(sub.satisfiedCode)
+)
   );
 
   details.appendChild(summary);
@@ -110,8 +147,11 @@ function createRequirement(req) {
 
   summary.append(
     element("span", "", title),
-    element("span", "status",
-      statusText(req.satisfiedCode))
+    element(
+      "span",
+      "status " + statusClass(req.satisfiedCode),
+      statusText(req.satisfiedCode)
+)
   );
 
   details.appendChild(summary);
@@ -181,6 +221,43 @@ function getRequirementGroup(req) {
   return "Other Academic Requirements";
 }
 
+function renderRequirementSummary(requirements) {
+  const academic = requirements.filter(req =>
+    getRequirementGroup(req) !== "Additional Audit Details"
+  );
+
+  const counts = {
+    C: 0,
+    I: 0,
+    N: 0,
+    other: 0
+  };
+
+  for (const req of academic) {
+    const status = String(
+      req.satisfiedCode ?? ""
+    ).trim().toUpperCase();
+
+    if (status === "C" ||
+        status === "I" ||
+        status === "N") {
+      counts[status]++;
+    } else {
+      counts.other++;
+    }
+  }
+
+  $("satisfiedCount").textContent = counts.C;
+  $("pendingCount").textContent = counts.I;
+  $("notSatisfiedCount").textContent = counts.N;
+  $("unverifiedCount").textContent = counts.other;
+
+  $("summaryNote").textContent =
+    `${academic.length} academic requirement records summarized. ` +
+    `Technical sections excluded. ` +
+    `Counts do not represent a graduation completion percentage.`;
+}
+
 
 async function loadDegreeAudit() {
   try {
@@ -212,6 +289,7 @@ async function loadDegreeAudit() {
       "Audit generated: " + formatDate(audit.runDate);
 
     const requirements = audit.requirements || [];
+    renderRequirementSummary(requirements);
 
     $("requirementCount").textContent =
       requirements.length + " recorded requirements";
