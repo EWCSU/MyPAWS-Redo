@@ -7,7 +7,10 @@ const { PrismaClient } = require('@prisma/client');
 const requireAuth = require('../middleware/requireAuth');
 
 const crypto = require('crypto'); // built into node tht gives us a random # generator
-const { sendVerificationCode } = require('../utils/mailer'); // imports the email function
+const {
+    sendVerificationCode,
+    sendPasswordResetLink
+} = require('../utils/mailer'); // imports the email function
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -29,6 +32,13 @@ const verifyLimiter = rateLimit({
 });
 
 const CODE_EXPIRY_MS = 10 * 60 * 1000; // 10 minutes
+const resetLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 5,
+    message: {
+        error: "Too many password reset requests. Please try again later."
+    }
+});
 
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -155,7 +165,16 @@ router.post('/verify-code', verifyLimiter, async (req, res) => {
       data: { twoFactorCode: null, twoFactorExpires: null },
     });
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '2h' });
+    
+const token = jwt.sign(
+    {
+        userId: user.id,
+        sessionVersion: user.sessionVersion
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "2h" }
+);
+
 
     res.cookie('token', token, {
       httpOnly: true,
@@ -193,6 +212,159 @@ router.get('/me', requireAuth, async (req, res) => {
 },
   });
   return res.json({ user });
+});
+
+router.post("/forgot-password", resetLimiter, async (req, res) => {
+    const message =
+        "If an account exists with this email, a password reset link will be sent.";
+
+    const email = typeof req.body?.email === "string"
+        ? req.body.email.trim().toLowerCase()
+        : "";
+
+    res.set("Cache-Control", "no-store");
+
+    if (!isValidEmail(email)) {
+        return res.json({ message });
+    }
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { email },
+            select: { id: true }
+        });
+
+        if (user) {
+            const token = crypto.randomBytes(32).toString("hex");
+
+            const tokenHash = crypto
+                .createHash("sha256")
+                .update(token)
+                .digest("hex");
+
+            await prisma.user.update({
+                where: { id: user.id },
+                data: {
+                    passwordResetTokenHash: tokenHash,
+                    passwordResetExpires: new Date(
+                        Date.now() + 10 * 60 * 1000
+                    )
+                }
+            });
+
+            try {
+                await sendPasswordResetLink(email, token);
+            } catch (emailError) {
+                console.error(
+                    "Password reset email failed:",
+                    emailError
+                );
+
+                await prisma.user.updateMany({
+                    where: {
+                        id: user.id,
+                        passwordResetTokenHash: tokenHash
+                    },
+                    data: {
+                        passwordResetTokenHash: null,
+                        passwordResetExpires: null
+                    }
+                });
+            }
+        }
+
+        return res.json({ message });
+
+    } catch (error) {
+        console.error("Forgot password error:", error);
+
+        return res.status(500).json({
+            error: "Unable to process the request right now."
+        });
+    }
+});
+
+router.post("/reset-password", resetLimiter, async (req, res) => {
+    const token = typeof req.body?.token === "string"
+        ? req.body.token.trim()
+        : "";
+
+    const password = req.body?.password;
+
+    res.set("Cache-Control", "no-store");
+
+    // Validate the token format and new password.
+    if (!/^[a-f0-9]{64}$/.test(token)) {
+        return res.status(400).json({
+            error: "Invalid or expired reset link."
+        });
+    }
+
+    if (!isValidPassword(password)) {
+        return res.status(400).json({
+            error: "Password must contain at least 8 characters, one letter, and one number."
+        });
+    }
+
+    try {
+        const tokenHash = crypto
+            .createHash("sha256")
+            .update(token)
+            .digest("hex");
+
+        const passwordHash = await bcrypt.hash(
+            password,
+            SALT_ROUNDS
+        );
+
+        // Update only if the reset token is valid and unexpired.
+        const result = await prisma.user.updateMany({
+            where: {
+                passwordResetTokenHash: tokenHash,
+                passwordResetExpires: {
+                    gt: new Date()
+                }
+            },
+            
+		data: {
+    			passwordHash,
+    			passwordResetTokenHash: null,
+    			passwordResetExpires: null,
+    			failedLoginAttempts: 0,
+    			lockedUntil: null,
+    			twoFactorCode: null,
+    			twoFactorExpires: null,
+    			sessionVersion: {
+        		  increment: 1
+    		       }
+		}
+
+        });
+
+        if (result.count !== 1) {
+            return res.status(400).json({
+                error: "Invalid or expired reset link."
+            });
+        }
+
+        // Clear the current browser's login cookie.
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax"
+        });
+
+        return res.json({
+            message: "Password reset successful. Please log in again."
+        });
+
+    } catch (error) {
+        console.error("Reset password error:", error);
+
+        return res.status(500).json({
+            error: "Unable to reset password."
+        });
+    }
 });
 
 module.exports = router;

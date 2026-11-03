@@ -103,4 +103,15 @@ body {
         font-weight: 900;
       }
       
-      
+  
+.forgot-password-link {
+    text-align: right;
+    margin: 8px 0 16px;
+}
+
+.forgot-password-link a {
+    color: #195AA5;
+    font-size: 14px;
+    text-decoration: underline;
+}
+    
