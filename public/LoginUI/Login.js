@@ -94,7 +94,17 @@ codeForm.addEventListener("submit", async (event) => {
             return;
         }
 
-        window.location.href = REDIRECT_AFTER_LOGIN;
+
+const role = result.data?.user?.role;
+
+if (role === "ADMIN") {
+    window.location.href = "/LoginUI/AdminDashboard.html";
+} else if (role === "STUDENT") {
+    window.location.href = REDIRECT_AFTER_LOGIN;
+} else {
+    messageEl.textContent = "Unable to determine account role.";
+}
+
 
     } catch (error) {
         console.error("Verification error:", error);

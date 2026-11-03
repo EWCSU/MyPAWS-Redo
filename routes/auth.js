@@ -164,7 +164,13 @@ router.post('/verify-code', verifyLimiter, async (req, res) => {
       maxAge: 2 * 60 * 60 * 1000,
     });
 
-    return res.json({ user: { id: user.id, email: user.email } });
+    return res.json({
+  user: {
+    id: user.id,
+    email: user.email,
+    role: user.role
+  }
+});
   } catch (err) {
     console.error('Verify error:', err);
     return res.status(500).json({ error: 'Something went wrong.' });
@@ -179,7 +185,12 @@ router.post('/logout', (req, res) => {
 router.get('/me', requireAuth, async (req, res) => {
   const user = await prisma.user.findUnique({
     where: { id: req.userId },
-    select: { id: true, email: true, createdAt: true },
+    select: {
+  id: true,
+  email: true,
+  role: true,
+  createdAt: true
+},
   });
   return res.json({ user });
 });
