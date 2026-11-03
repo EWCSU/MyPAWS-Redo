@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+  <title>Degree Audit | MyPAWS Redo</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #F5F7FB;
+      color: #192B40;
+    }
+
+    header {
+      background: #003C69;
+      color: white;
+      padding: 22px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    header a {
+      color: white;
+      text-decoration: none;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 45px auto;
+      padding: 0 24px;
+    }
+
+    h1 { margin-bottom: 8px; }
+    h2 { font-size: 19px; }
+    h3 { font-size: 15px; }
+
+    .muted {
+      color: #64748B;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 18px;
+    }
+
+    .requirement {
+      background: white;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      padding: 16px 20px;
+    }
+
+    .subrequirement {
+      border-top: 1px solid #E2E8F0;
+      padding: 14px 8px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    summary:hover {
+      color: #0065BD;
+    }
+
+    .status {
+      display: block;
+      font-size: 12px;
+      font-weight: 400;
+      color: #64748B;
+      margin-top: 6px;
+    }
+
+    .course {
+      background: #F5F7FB;
+      border-radius: 6px;
+      padding: 12px;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    .error {
+      color: #B42318;
+    }
+
+    @media (max-width: 700px) {
+      main { margin-top: 25px; }
+      header { padding: 18px 24px; }
+      .card { padding: 18px; }
+    }
+  </style>
+
+  <script src="DegreeAudit.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <strong>myPAWS REDO</strong>
+    <nav>
+      <a href="StudentDashboard.html">Dashboard</a>
+    </nav>
+  </header>
+
+  <main>
+    <p class="muted">STUDENT PORTAL / DEGREE AUDIT</p>
+    <h1>My Degree Audit</h1>
+
+    <section class="card">
+      <h2 id="programTitle">Loading degree program...</h2>
+      <p id="auditDate" class="muted"></p>
+      <p id="requirementCount"></p>
+    </section>
+
+    <section aria-labelledby="requirementsHeading">
+      <h2 id="requirementsHeading">Degree Requirements</h2>
+      <p class="muted">
+        Select a requirement to view its subrequirements
+        and associated coursework.
+      </p>
+
+      <div id="requirements" aria-live="polite">
+        Loading your academic requirements...
+      </div>
+    </section>
+
+    <p class="muted">
+      Academic prototype using provided test data.
+      Requirement status codes are shown as recorded
+      until their meanings are verified.
+    </p>
+  </main>
+</body>
+</html>

@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/auth');
 
 const app = express();
+const studentRoutes = require("./routes/student");
 
 app.use(helmet());
 app.use(cors({
@@ -16,7 +17,14 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
+// Disable public account registration
+app.post('/api/auth/register', (req, res) => {
+    return res.status(403).json({
+        error: 'Public registration is disabled.'
+    });
+});
 app.use('/api/auth', authRoutes);
+app.use("/api/student", studentRoutes);
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
