@@ -206,8 +206,8 @@ async function main() {
   const files = fs.readdirSync(dataFolder)
     .filter(f => f.toLowerCase().endsWith(".zip"));
 
-  check(files.length === 2,
-    `Expected 2 ZIP files; found ${files.length}`);
+  check(files.length === 3,
+    `Expected 3 ZIP files; found ${files.length}`);
 
   const prepared = files.map(prepare);
 

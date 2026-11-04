@@ -151,6 +151,13 @@ async function loadAcademicProgress() {
 
         $("cumulativeGPA").textContent =
             displayValue(progress.cumulativeGPA);
+	
+	$("csusbGPA").textContent =
+    	   displayValue(progress.csusbGPA);
+
+	$("majorGPA").textContent =
+    	   displayValue(progress.majorGPA);
+
 
         $("requiredUnits").textContent =
             displayValue(progress.requiredUnits);
@@ -166,6 +173,8 @@ async function loadAcademicProgress() {
 
         for (const id of [
             "cumulativeGPA",
+	    "csusbGPA",
+    	    "majorGPA",
             "requiredUnits",
             "recordedUnits",
             "remainingUnits"

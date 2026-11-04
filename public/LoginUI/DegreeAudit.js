@@ -25,25 +25,23 @@ function formatDate(value) {
 }
 
 
+
 function statusText(code) {
   const status = String(code ?? "").trim().toUpperCase();
 
   const labels = {
-    C: "Satisfied",
-    I: "In Progress / Pending",
-    N: "Not Satisfied"
+    C: "Completed",
+    I: "In Progress",
+    N: "Not Completed"
   };
 
   if (labels[status]) {
-    return `${labels[status]} (Source: ${status})`;
+    return labels[status];
   }
 
-  if (!status) {
-    return "Status not provided";
-  }
-
-  return `Source status: ${status} (Not yet interpreted)`;
+  return "Status Not Verified";
 }
+
 
 
 function statusClass(code) {
@@ -75,6 +73,20 @@ function createCourse(course) {
   const info = element("div", "muted");
 
   const parts = [];
+  
+const grade = String(course.grade ?? "").trim().toUpperCase();
+const progressCode = String(course.inProgressCode ?? "").trim().toUpperCase();
+
+if (grade === "RG" && progressCode === "I") {
+  parts.push("Status: In Progress");
+} else if (grade === "RG" || progressCode === "I") {
+  parts.push("Status: Needs Verification");
+} else if (grade) {
+  parts.push("Status: Grade Recorded");
+} else {
+  parts.push("Status: Not Verified");
+}
+
 
   if (course.grade) {
     parts.push("Grade: " + course.grade);

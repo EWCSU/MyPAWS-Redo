@@ -340,6 +340,7 @@ router.get("/academic-progress", async (req, res) => {
                 requirements: {
                     select: {
                         sourceRtabx: true,
+			sourceName: true,
                         sourceData: true
                     }
                 }
@@ -365,6 +366,22 @@ router.get("/academic-progress", async (req, res) => {
         }
 
         const source = cumulative.sourceData;
+	
+const findCategory = category =>
+    audit.requirements.find(req =>
+        String(req.sourceData?.CATEGORY ?? "")
+            .trim().toUpperCase() === category
+    );
+
+const overallGPA = findCategory("CUM 2.0 GPA");
+const csusbGPA = findCategory("CSUSB GPA");
+
+const majorGPA = audit.requirements.find(req =>
+    String(req.sourceName ?? "")
+        .trim().toUpperCase().endsWith("-AVE") &&
+    String(req.sourceData?.CATEGORY ?? "")
+        .trim().toUpperCase() === "MAJOR"
+);
 
         function numberOrNull(value) {
             const text = String(value ?? "").trim();
@@ -382,7 +399,13 @@ router.get("/academic-progress", async (req, res) => {
             requiredUnits: numberOrNull(source.REQHRS),
             recordedUnits: numberOrNull(source.GOTHRS),
             remainingUnits: numberOrNull(source.NEEDHRS),
-            cumulativeGPA: numberOrNull(source.GOTGPA)
+            
+cumulativeGPA: numberOrNull(overallGPA?.sourceData?.GOTGPA),
+csusbGPA: numberOrNull(csusbGPA?.sourceData?.GOTHRS) === 0
+    ? null
+    : numberOrNull(csusbGPA?.sourceData?.GOTGPA),
+majorGPA: numberOrNull(majorGPA?.sourceData?.GOTGPA)
+
         };
 
         res.set("Cache-Control", "no-store");
