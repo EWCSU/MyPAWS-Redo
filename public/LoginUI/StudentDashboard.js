@@ -149,14 +149,26 @@ async function loadAcademicProgress() {
                 : String(value);
         }
 
-        $("cumulativeGPA").textContent =
-            displayValue(progress.cumulativeGPA);
-	
-	$("csusbGPA").textContent =
-    	   displayValue(progress.csusbGPA);
-
-	$("majorGPA").textContent =
-    	   displayValue(progress.majorGPA);
+        for (const field of ["cumulativeGPA", "csusbGPA", "majorGPA"]) {
+            const value = progress[field];
+            const target = $(field);
+            target.textContent = typeof value === "number" && Number.isFinite(value)
+                ? value.toFixed(3)
+                : "Not available";
+            const noteId = field + "Explanation";
+            document.getElementById(noteId)?.remove();
+            const explanation = progress.gpaExplanations?.[field];
+            if (explanation) {
+                const note = document.createElement("p");
+                note.id = noteId;
+                note.className = "muted";
+                note.textContent = explanation;
+                target.insertAdjacentElement("afterend", note);
+                target.setAttribute("aria-describedby", noteId);
+            } else {
+                target.removeAttribute("aria-describedby");
+            }
+        }
 
 
         $("requiredUnits").textContent =

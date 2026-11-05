@@ -102,6 +102,7 @@
       background: #E8F1FD;
       color: #195AA5;
     }
+    .status.unknown { background: #f1f5f9; color: #475569; }
 
     .patterns {
       display: flex;
@@ -150,6 +151,11 @@
   white-space: normal;
 }
 
+    .requirement.satisfied { border-left: 6px solid #176534; background: #f0faf2; }
+    .requirement.not-satisfied { border-left: 6px solid #a11d25; background: #fff5f5; }
+    .requirement.pending { border-left: 6px solid #195aa5; background: #f2f7ff; }
+    .requirement.unknown { border-left: 6px solid #64748b; }
+    .warning { color: #854d0e; background: #fef9c3; padding: 10px; }
   </style>
   <script src="RemainingRequirements.js" defer></script>
 </head>
@@ -185,6 +191,8 @@
         imported degree audit. They are not verified
         enrollment recommendations. Prerequisites,
         previous coursework, and restrictions may apply.
+        This is an imported snapshot. Later registrations, waivers,
+        substitutions, or added minors require an updated audit import.
       </p>
     </div>
 
@@ -192,8 +200,7 @@
       <h2>Requirements Overview</h2>
       <p id="requirementCount" class="muted">Loading...</p>
       <p class="muted">
-        Includes unmet and pending General Education,
-        Major, and Elective requirements.
+        Includes unmet, in-progress, and unverified academic requirements, including university, GPA, and residency requirements. Hidden and optional source records are excluded.
       </p>
     </section>
 

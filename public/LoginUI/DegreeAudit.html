@@ -158,6 +158,11 @@
   }
 }
 
+    .requirement.satisfied { border-left: 6px solid #176534; background: #f0faf2; }
+    .requirement.not-satisfied { border-left: 6px solid #a11d25; background: #fff5f5; }
+    .requirement.pending { border-left: 6px solid #195aa5; background: #f2f7ff; }
+    .requirement.unknown { border-left: 6px solid #64748b; }
+    .warning { color: #854d0e; background: #fef9c3; padding: 10px; }
   </style>
 
   <script src="DegreeAudit.js" defer></script>
@@ -197,22 +202,22 @@
 
   <div class="summary-grid">
     <div class="summary-stat">
-      <span>Satisfied</span>
+      <span>Completed</span>
       <strong id="satisfiedCount">—</strong>
     </div>
 
     <div class="summary-stat">
-      <span>Pending</span>
+      <span>In progress</span>
       <strong id="pendingCount">—</strong>
     </div>
 
     <div class="summary-stat">
-      <span>Not Satisfied</span>
+      <span>Needs attention</span>
       <strong id="notSatisfiedCount">—</strong>
     </div>
 
     <div class="summary-stat">
-      <span>Other / Unverified</span>
+      <span>Needs advisor review</span>
       <strong id="unverifiedCount">—</strong>
     </div>
   </div>

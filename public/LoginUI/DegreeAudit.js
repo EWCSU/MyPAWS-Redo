@@ -32,14 +32,14 @@ function statusText(code) {
   const labels = {
     C: "Completed",
     I: "In Progress",
-    N: "Not Completed"
+    N: "Needs attention"
   };
 
   if (labels[status]) {
     return labels[status];
   }
 
-  return "Status Not Verified";
+  return "Needs advisor review";
 }
 
 
@@ -113,7 +113,7 @@ if (grade === "RG" && progressCode === "I") {
 }
 
 function createSubrequirement(sub) {
-  const details = element("details", "subrequirement");
+  const details = element("details", "subrequirement " + statusClass(sub.satisfiedCode));
   const summary = element("summary");
 
   summary.append(
@@ -132,6 +132,7 @@ element(
 
   details.appendChild(summary);
 
+  for (const reason of sub.reasons || []) details.appendChild(element("p", "", reason));
   const courses = sub.courses || [];
 
   if (courses.length === 0) {
@@ -149,7 +150,7 @@ element(
 }
 
 function createRequirement(req) {
-  const details = element("details", "requirement");
+  const details = element("details", "requirement " + (req.academic ? statusClass(req.satisfiedCode) : "unknown"));
   const summary = element("summary");
 
   const title = req.displayTitle ||
@@ -168,7 +169,13 @@ function createRequirement(req) {
 
   details.appendChild(summary);
 
-  const subs = req.subrequirements || [];
+  for (const reason of req.reasons || []) details.appendChild(element("p", "", reason));
+  if (req.academic && req.status !== "completed") {
+    const link = element("a", "", "See remaining requirements and course options");
+    link.href = "RemainingRequirements.html#requirement-" + encodeURIComponent(req.sourceRtabx);
+    details.appendChild(link);
+  }
+  const subs = (req.subrequirements || []).filter(sub => !sub.hiddenInSource);
 
   if (subs.length === 0) {
     details.appendChild(
@@ -201,6 +208,7 @@ function getRequirementGroup(req) {
 
   // Keep technical records accessible, but separate.
   if (
+    req.academic === false ||
     req.sourceRtabx === "00" ||
     name === "LEGEND" ||
     name === "REJECT" ||
@@ -263,11 +271,14 @@ function renderRequirementSummary(requirements) {
   $("pendingCount").textContent = counts.I;
   $("notSatisfiedCount").textContent = counts.N;
   $("unverifiedCount").textContent = counts.other;
+  $("unverifiedCount").parentElement.hidden = counts.other === 0;
 
-  $("summaryNote").textContent =
-    `${academic.length} academic requirement records summarized. ` +
-    `Technical sections excluded. ` +
-    `Counts do not represent a graduation completion percentage.`;
+  $("summaryNote").textContent = counts.N === 0 && counts.other === 0
+    ? (counts.I > 0
+      ? "All requirements are completed or covered by in-progress courses. Finish those courses successfully; no additional coursework is identified by this audit."
+      : "All listed degree requirements are completed.")
+    : "Review the sections needing attention below. In-progress coursework is listed separately from additional requirements.";
+
 }
 
 
@@ -298,13 +309,20 @@ async function loadDegreeAudit() {
       audit.programTitle || "Degree Audit";
 
     $("auditDate").textContent =
-      "Audit generated: " + formatDate(audit.runDate);
+      "Imported audit dated: " + formatDate(audit.runDate) +
+      ". Later registrations, waivers, substitutions, and program changes are not reflected until a newer audit is imported.";
 
-    const requirements = audit.requirements || [];
+    if (audit.presentationVersion !== 2) {
+      throw new Error("The server is running an older audit version. Restart the application server to load the updated audit.");
+    }
+    const requirements = (audit.requirements || []).filter(req => req.academic);
+    if (audit.review) {
+      $("auditDate").textContent = "Reviewed against your official report dated " + formatDate(audit.review.date) + ". " + audit.review.description;
+    }
     renderRequirementSummary(requirements);
 
     $("requirementCount").textContent =
-      requirements.length + " recorded requirements";
+      requirements.length + " degree requirement sections";
 
     requirements.sort((a, b) =>
       String(a.sourceRtabx).localeCompare(
@@ -381,7 +399,7 @@ for (const [groupName, items] of groups) {
     console.error(error);
     $("requirements").replaceChildren(
       element("p", "error",
-        "Unable to load degree audit information.")
+        error.message || "Unable to load degree audit information.")
     );
   }
 }

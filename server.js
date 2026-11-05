@@ -1,4 +1,7 @@
 require('dotenv').config();
+// Prisma's binary engine detects readiness from its INFO startup message.
+// A parent process's RUST_LOG=warn suppresses that message and hangs queries.
+process.env.RUST_LOG = 'info';
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -18,6 +21,10 @@ app.use(cors({
   }));
 app.use(express.json());
 app.use(cookieParser());
+app.get('/api/health', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.json({ status: 'running', auditPresentationVersion: 2 });
+});
 
 // Disable public account registration
 app.post('/api/auth/register', (req, res) => {

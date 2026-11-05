@@ -3,6 +3,9 @@ const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 const requireAuth = require("../middleware/requireAuth");
 
+const { organizeAudit, remainingRequirements, isAcademic } = require("../utils/auditLogic");
+const { checkPrerequisites } = require("../utils/prerequisites");
+const { auditGpa } = require("../utils/auditGpa");
 const router = express.Router();
 const prisma = new PrismaClient();
 
@@ -109,6 +112,8 @@ router.get("/audit-summary", async (req, res) => {
             orderBy: { runDate: "desc" },
             select: {
                 id: true,
+                sourceAuditSequence: true,
+                programCode: true,
                 programTitle: true,
                 runDate: true,
                 requirements: {
@@ -135,20 +140,12 @@ router.get("/audit-summary", async (req, res) => {
             });
         }
 
-        const sections = audit.requirements
-            .filter(req => {
-                const name = (req.sourceName || "")
-                    .trim().toUpperCase();
-
-                // Exclude technical report sections.
-                return name &&
-                    name !== "LEGEND" &&
-                    name !== "REJECT";
-            })
+        const sections = organizeAudit(audit).requirements
+            .filter(req => req.academic)
             .map(req => ({
                 requirementCode: req.sourceRtabx,
-                title: req.title || req.sourceName,
-                category: req.sourceData?.CATEGORY || null,
+                title: req.displayTitle || req.title || req.sourceName,
+                category: req.category || null,
                 statusCode: req.satisfiedCode,
                 subrequirementCount:
                     req._count.subrequirements
@@ -211,6 +208,8 @@ router.get("/audit-details", async (req, res) => {
             orderBy: { runDate: "desc" },
             select: {
                 id: true,
+                sourceAuditSequence: true,
+                programCode: true,
                 programTitle: true,
                 runDate: true,
                 requirements: {
@@ -250,41 +249,7 @@ router.get("/audit-details", async (req, res) => {
         }
 
 
-const organizedAudit = {
-    ...audit,
-    requirements: audit.requirements.map(
-        ({ sourceData, subrequirements, ...req }) => ({
-            ...req,
-
-            category: String(
-                sourceData?.CATEGORY ?? ""
-            ).trim(),
-
-            displayTitle:
-                String(sourceData?.LABEL ?? "").trim() ||
-                req.title ||
-                req.sourceName ||
-                `Requirement ${req.sourceRtabx}`,
-
-            hiddenInSource:
-                String(sourceData?.HIDDEN ?? "").trim() === "H",
-
-            subrequirements: subrequirements.map(
-                ({ sourceData: subSource, ...sub }) => ({
-                    ...sub,
-
-                    displayTitle:
-                        String(subSource?.LABEL ?? "").trim() ||
-                        sub.title ||
-                        `Subrequirement ${sub.sourceStabx}`,
-
-                    hiddenInSource:
-                        String(subSource?.HIDDEN ?? "").trim() === "H"
-                })
-            )
-        })
-    )
-};
+const organizedAudit = organizeAudit(audit);
 
 res.set("Cache-Control", "no-store");
 return res.json({ audit: organizedAudit });
@@ -393,6 +358,11 @@ const majorGPA = audit.requirements.find(req =>
             return Number.isFinite(number) ? number : null;
         }
 
+        const gpas = {
+            cumulativeGPA: auditGpa(overallGPA?.sourceData),
+            csusbGPA: auditGpa(csusbGPA?.sourceData),
+            majorGPA: auditGpa(majorGPA?.sourceData)
+        };
         const progress = {
             programTitle: audit.programTitle,
             auditDate: audit.runDate,
@@ -400,11 +370,11 @@ const majorGPA = audit.requirements.find(req =>
             recordedUnits: numberOrNull(source.GOTHRS),
             remainingUnits: numberOrNull(source.NEEDHRS),
             
-cumulativeGPA: numberOrNull(overallGPA?.sourceData?.GOTGPA),
-csusbGPA: numberOrNull(csusbGPA?.sourceData?.GOTHRS) === 0
-    ? null
-    : numberOrNull(csusbGPA?.sourceData?.GOTGPA),
-majorGPA: numberOrNull(majorGPA?.sourceData?.GOTGPA)
+            cumulativeGPA: gpas.cumulativeGPA.value,
+            csusbGPA: gpas.csusbGPA.value,
+            majorGPA: gpas.majorGPA.value,
+            gpaExplanations: Object.fromEntries(Object.entries(gpas)
+                .map(([key, result]) => [key, result.explanation]))
 
         };
 
@@ -461,6 +431,8 @@ router.get("/coursework", async (req, res) => {
             orderBy: { runDate: "desc" },
             select: {
                 id: true,
+                sourceAuditSequence: true,
+                programCode: true,
                 programTitle: true,
                 runDate: true
             }
@@ -622,6 +594,8 @@ router.get("/remaining-course-options", async (req, res) => {
             orderBy: { runDate: "desc" },
             select: {
                 id: true,
+                sourceAuditSequence: true,
+                programCode: true,
                 programTitle: true,
                 runDate: true
             }
@@ -634,101 +608,19 @@ router.get("/remaining-course-options", async (req, res) => {
         }
 
         const records = await prisma.degreeRequirement.findMany({
-            where: {
-                degreeAuditId: audit.id,
-                satisfiedCode: { in: ["N", "I"] }
-            },
-            select: {
-                sourceRtabx: true,
-                title: true,
-                sourceName: true,
-                satisfiedCode: true,
-                sourceData: true,
-                subrequirements: {
-                    where: {
-                        satisfiedCode: { in: ["N", "I"] }
-                    },
-                    select: {
-                        sourceStabx: true,
-                        title: true,
-                        satisfiedCode: true,
-                        sourceData: true,
-                        allowableCourseRules: {
-                            select: {
-                                coursePattern: true,
-                                ruleType: true
-                            }
-                        }
-                    }
-                }
-            }
+            where: { degreeAuditId: audit.id },
+            include: { subrequirements: { include: { allowableCourseRules: true, courses: true } } },
+            orderBy: { sourceRtabx: "asc" }
         });
-
-        const normalize = value =>
-            String(value ?? "").trim().toUpperCase();
-
-        
-function isCourseLike(value) {
-    return /^[A-Z]{2,5}\s*\d{4}[A-Z]?$/
-        .test(normalize(value));
-}
-
-
-        function uniquePatterns(rules, type) {
-            return [...new Set(
-                rules
-                    .filter(rule =>
-                        normalize(rule.ruleType) === type
-                    )
-                    .map(rule =>
-                        normalize(rule.coursePattern)
-                    )
-                    .filter(isCourseLike)
-            )].sort();
+        const reviewedAudit = organizeAudit({ ...audit, requirements: records });
+        const requirements = remainingRequirements({ ...audit, requirements: records });
+        const coursework = records.flatMap(r => r.subrequirements.flatMap(s => s.courses));
+        for (const req of requirements) {
+            for (const sub of req.subrequirements) {
+                sub.courseEligibility = Object.fromEntries(sub.aCodedCoursePatterns.map(code =>
+                    [code, checkPrerequisites(code, coursework)]));
+            }
         }
-
-        const requirements = records
-            .filter(req => {
-                const category = normalize(
-                    req.sourceData?.CATEGORY
-                );
-
-                return category === "GENERAL EDUC" ||
-                    category === "MAJOR" ||
-                    category.includes("ELECTIVE");
-            })
-            .map(req => ({
-                requirementCode: req.sourceRtabx,
-                title:
-                    String(req.sourceData?.LABEL ?? "").trim() ||
-                    req.title ||
-                    req.sourceName,
-                category: normalize(req.sourceData?.CATEGORY),
-                statusCode: req.satisfiedCode,
-
-                subrequirements: req.subrequirements.map(sub => {
-                    const rules = sub.allowableCourseRules;
-
-                    return {
-                        title:
-                            String(sub.sourceData?.LABEL ?? "").trim() ||
-                            sub.title ||
-                            `Subrequirement ${sub.sourceStabx}`,
-
-                        statusCode: sub.satisfiedCode,
-
-                        aCodedCoursePatterns:
-                            uniquePatterns(rules, "A"),
-
-                        rCodedCoursePatterns:
-                            uniquePatterns(rules, "R"),
-
-                        otherPatternCount: rules.filter(rule =>
-                            !isCourseLike(rule.coursePattern)
-                        ).length
-                    };
-                })
-            }));
 
         res.set("Cache-Control", "no-store");
 
@@ -736,6 +628,7 @@ function isCourseLike(value) {
             programTitle: audit.programTitle,
             auditDate: audit.runDate,
             requirementCount: requirements.length,
+            review: reviewedAudit.review || null,
             requirements,
             note: "These are source course patterns, not confirmed " +
                 "recommendations. Eligibility, prerequisites, prior " +
