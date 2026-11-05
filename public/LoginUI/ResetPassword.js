@@ -13,9 +13,12 @@ window.history.replaceState(null, "", window.location.pathname);
 
 // Check that the token has the correct format.
 if (!resetToken || !/^[a-f0-9]{64}$/.test(resetToken)) {
+    resetToken = null;
     message.textContent =
         "Invalid reset link. Please request a new one.";
     submitButton.disabled = true;
+    form.hidden = true;
+    document.getElementById('resetInstructions').hidden = true;
 }
 
 form.addEventListener("submit", async (event) => {
@@ -42,6 +45,7 @@ form.addEventListener("submit", async (event) => {
 
     if (password !== confirmPassword) {
         message.textContent = "Passwords do not match.";
+        document.getElementById('confirmPassword').focus();
         return;
     }
 

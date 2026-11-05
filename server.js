@@ -39,7 +39,7 @@ app.use("/api/admin", adminRoutes);
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-  res.send('Login API is running.');
+  res.redirect('/LoginUI/Main.html');
 });
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, (err) => {

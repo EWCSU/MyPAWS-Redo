@@ -285,7 +285,7 @@ function renderRequirementSummary(requirements) {
 async function loadDegreeAudit() {
   try {
     const response = await fetch(
-      "/api/student/audit-details",
+      "/api/student/audit-details" + (new URLSearchParams(location.search).has("auditId") ? "?auditId=" + encodeURIComponent(new URLSearchParams(location.search).get("auditId")) : ""),
       {
         credentials: "same-origin",
         cache: "no-store"
@@ -383,6 +383,24 @@ for (const [groupName, items] of groups) {
   heading.style.fontSize = "20px";
 
   container.appendChild(heading);
+  const progress = element("div", "section-progress");
+  for (const [code, label] of [["C", "completed"], ["I", "in progress"], ["N", "need attention"]]) {
+    progress.appendChild(element("span", "", items.filter(item => item.satisfiedCode === code).length + " " + label));
+  }
+  container.appendChild(progress);
+  const chart = element('div', 'section-chart');
+  chart.setAttribute('role', 'img');
+  const reviewCount = items.filter(item => !['C','I','N'].includes(item.satisfiedCode)).length;
+  if (reviewCount) progress.appendChild(element('span', '', reviewCount + ' need advisor review'));
+  chart.setAttribute('aria-label', groupName + ': ' + [...progress.children].map(node => node.textContent).join(', ') + '. Counts of requirement sections, not percentage of degree completed.');
+  for (const [code, className] of [['C','chart-complete'], ['I','chart-progress'], ['N','chart-needed'], ['other','chart-review']]) {
+    const count = items.filter(item => code === 'other' ? !['C','I','N'].includes(item.satisfiedCode) : item.satisfiedCode === code).length;
+    if (!count) continue;
+    const segment = element('span', className);
+    segment.style.flexGrow = count;
+    chart.appendChild(segment);
+  }
+  container.appendChild(chart);
 
   for (const req of items) {
     container.appendChild(createRequirement(req));

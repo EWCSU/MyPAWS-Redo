@@ -203,7 +203,8 @@ router.get("/audit-details", async (req, res) => {
 
         const audit = await prisma.degreeAudit.findFirst({
             where: {
-                studentRecordId: user.studentRecord.id
+                studentRecordId: user.studentRecord.id,
+                ...(typeof req.query.auditId === "string" ? { id: req.query.auditId } : {})
             },
             orderBy: { runDate: "desc" },
             select: {

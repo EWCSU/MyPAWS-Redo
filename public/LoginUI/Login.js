@@ -28,7 +28,11 @@ async function postJSON(url, body) {
 // Step 1: Validate email and password
 loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-    messageEl.textContent = "";
+    const button = loginForm.querySelector('button[type="submit"]');
+    if (button.disabled) return;
+    button.disabled = true;
+    loginForm.setAttribute('aria-busy', 'true');
+    messageEl.textContent = "Signing in…";
 
     const email = document.getElementById("email")
         .value.trim();
@@ -51,8 +55,9 @@ loginForm.addEventListener("submit", async (event) => {
         if (result.data.requiresVerification) {
             pendingEmail = result.data.email || email;
 
-            loginForm.style.display = "none";
-            codeForm.style.display = "";
+            loginForm.hidden = true;
+            codeForm.hidden = false;
+            document.getElementById('password').value = '';
 
             messageEl.textContent =
                 "A six-digit verification code was sent to your email.";
@@ -68,13 +73,20 @@ loginForm.addEventListener("submit", async (event) => {
         console.error("Login error:", error);
         messageEl.textContent =
             "Could not reach the server.";
+    } finally {
+        button.disabled = false;
+        loginForm.removeAttribute('aria-busy');
     }
 });
 
 // Step 2: Verify emailed code
 codeForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-    messageEl.textContent = "";
+    const button = codeForm.querySelector('button[type="submit"]');
+    if (button.disabled) return;
+    button.disabled = true;
+    codeForm.setAttribute('aria-busy', 'true');
+    messageEl.textContent = "Checking your code…";
 
     const code = document.getElementById("code")
         .value.trim();
@@ -110,5 +122,8 @@ if (role === "ADMIN") {
         console.error("Verification error:", error);
         messageEl.textContent =
             "Could not reach the server.";
+    } finally {
+        button.disabled = false;
+        codeForm.removeAttribute('aria-busy');
     }
 });

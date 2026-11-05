@@ -275,3 +275,10 @@ loadPlan().catch(error => {
   $("courseCount").textContent =
     "Unable to load academic plan.";
 });
+
+// A compact audit comparison alongside the student's saved semester plan.
+apiRequest('/api/student/audit-summary').then(({ audit }) => {
+  const rows = audit.requirements;
+  $('planAuditSummary').textContent = ['C', 'I', 'N'].map((code, index) =>
+    rows.filter(row => row.statusCode === code).length + ' ' + ['completed', 'in progress', 'need attention'][index]).join(' · ');
+}).catch(error => { $('planAuditSummary').textContent = error.message; });

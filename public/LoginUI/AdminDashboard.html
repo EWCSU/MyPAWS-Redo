@@ -118,26 +118,18 @@ td {
     </style>
 
     <script src="AdminDashboard.js" defer></script>
+<link rel="stylesheet" href="StudentShell.css">
+<link rel="stylesheet" href="AccountShell.css">
+<script src="AccountShell.js" defer></script>
 </head>
 <body>
 
     
-<header>
-  <strong style="display: inline-flex; align-items: center; gap: 10px; font-family: Georgia, 'Times New Roman', serif; font-size: 26px;">
-    <img
-      src="/assets/mypaws-paw-icon.png"
-      alt=""
-      width="75"
-      height="75"
-      style="object-fit: contain; background: white; border-radius: 10px; padding: 0.005px;"
-    >
-    myPAWS REDO
-  </strong>
-  <a href="StudentDashboard.html">Dashboard</a>
-</header>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="account-header"><a class="account-brand" href="AdminDashboard.html"><img src="/assets/mypaws-paw-icon.png" alt="" width="52" height="52">myPAWS <small>REDO</small></a><div class="account-actions"><strong>Administrator</strong><button type="button" id="logoutButton">Log out</button></div></header>
 
 
-    <main>
+    <main id="main-content" tabindex="-1">
         <p class="muted">ADMINISTRATION PORTAL</p>
         <h1>Admin Dashboard</h1>
         <p class="muted">
@@ -176,15 +168,15 @@ td {
         Loading student accounts...
     </p>
 
-    <div class="table-container">
+    <div class="table-container" tabindex="0" role="region" aria-label="Test accounts table">
         <table>
             <thead>
                 <tr>
-                    <th>Email</th>
-                    <th>Student Record</th>
-                    <th>Account Status</th>
-                    <th>Failed Attempts</th>
-		    <th>Action</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Student Record</th>
+                    <th scope="col">Account Status</th>
+                    <th scope="col">Failed Attempts</th>
+		    <th scope="col">Action</th>
                 </tr>
             </thead>
 

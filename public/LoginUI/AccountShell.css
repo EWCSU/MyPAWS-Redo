@@ -1,0 +1,31 @@
+/* Shared public/account layout; student navigation remains in StudentShell. */
+header.account-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; padding:18px 3%; background:#fff; color:#192b40; border-bottom:5px solid #2864ba; }
+.account-header .account-brand { display:flex; align-items:center; gap:8px; font-size:24px; font-weight:750; text-decoration:none; color:#183a63; }
+.account-brand img { width:52px; height:52px; }
+.account-brand small { font-size:12px; }
+.account-header a { color:#183a63; }
+.account-header .account-actions { display:flex; align-items:center; gap:16px; }
+.account-header button { font:inherit; color:#183a63; border:1px solid #8195ac; background:white; padding:8px 12px; border-radius:6px; cursor:pointer; }
+main.auth-main { max-width:500px; margin:48px auto; padding:0 20px; }
+.auth-card { background:white; border:1px solid #dce3ed; border-radius:14px; padding:32px; box-shadow:0 4px 18px #192b4008; }
+.auth-card h1 { margin:8px 0 12px; font-size:30px; line-height:1.25; letter-spacing:-.5px; }
+.auth-card h2 { font-size:22px; }
+.login-identity { text-align:center; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid #e2e8f0; }
+.login-logo { display:block; width:200px; max-width:75%; height:auto; margin:0 auto 16px; }
+.login-identity .eyebrow { margin:0; }
+.auth-card p { color:#475b73; }
+.auth-card .eyebrow { font-size:12px; color:#205ca7; text-transform:uppercase; font-weight:700; letter-spacing:1px; }
+.auth-card label { display:block; font-weight:600; margin:18px 0 6px; }
+.auth-card input { display:block; width:100%; min-height:46px; border:1px solid #8195ac; border-radius:6px; padding:10px 12px; font:inherit; background:white; color:#192b40; }
+.auth-card button[type=submit] { width:100%; min-height:46px; margin-top:20px; padding:10px 16px; background:#205ca7; color:white; border:1px solid #205ca7; border-radius:6px; font:inherit; font-weight:600; cursor:pointer; }
+.auth-card button:disabled { opacity:.6; cursor:not-allowed; }
+.auth-card .password-toggle { display:block; margin:6px 0 0 auto; padding:6px 0; border:0; background:transparent; color:#205ca7; font:inherit; font-size:14px; cursor:pointer; text-decoration:underline; }
+.auth-card a { color:#205ca7; text-underline-offset:3px; }
+.auth-card .forgot-password-link { text-align:right; margin:12px 0; }
+.auth-card [role=status]:not(:empty) { padding:12px; background:#edf3fc; border-left:3px solid #2864ba; border-radius:4px; overflow-wrap:anywhere; }
+.auth-footer { text-align:center; padding:0 24px 24px; font-size:13px; color:#475b73; }
+.auth-back { display:inline-block; margin-top:12px; }
+.high-contrast .auth-card, .high-contrast .account-header { background:white; border-color:#111; color:#111; }
+.high-contrast .auth-card p, .high-contrast .auth-footer { color:#111; }
+[hidden] { display:none !important; }
+@media (max-width:550px) { main.auth-main { margin:28px auto; padding:0 16px; } .auth-card { padding:24px; } header.account-header { padding:14px 16px; } }

@@ -6,20 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyPAWS Redo | Login</title>
     <link rel="icon" type="image/png" href="/assets/mypaws-paw-icon.png">
-    <link rel="stylesheet" href="Main.css">
+    <link rel="stylesheet" href="StudentShell.css">
+    <link rel="stylesheet" href="AccountShell.css">
+    <script src="AccountShell.js" defer></script>
     <script src="Login.js" defer></script>
 </head>
 <body>
-    <main class="box">
-        
-<img
-    src="/assets/mypaws-logo.png"
-    alt="myPAWS Redo Logo"
-    style="width:350px;max-width:80%;height:auto;display:block;margin:0 auto;"
->
-
-
-        <h1>Student Login</h1>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="account-header"><a class="account-brand" href="Main.html"><img src="/assets/mypaws-paw-icon.png" alt="" width="52" height="52">myPAWS <small>REDO</small></a><span>Account access</span></header>
+<main class="auth-main" id="main-content" tabindex="-1"><div class="auth-card">
+        <div class="login-identity">
+            <img class="login-logo" src="/assets/mypaws-logo.png" alt="myPAWS Redo" fetchpriority="high">
+            <p class="eyebrow">Welcome to MyPAWS</p>
+        </div>
+        <h1>Sign in</h1>
         <p>Access your academic progress and degree audit.</p>
 
         <form id="loginForm" class="Input-form">
@@ -55,7 +55,7 @@
         </form>
 
         <form id="codeForm" class="Input-form"
-              style="display:none;">
+              hidden>
             <h2>Email Verification</h2>
             <p>Enter the six-digit code sent to your email.</p>
 
@@ -76,9 +76,11 @@
             <button class="Login" type="submit">
                 Verify Code
             </button>
+            <p><a href="Main.html">Use a different account</a></p>
         </form>
 
         <p id="message" role="status" aria-live="polite"></p>
-    </main>
+    </div></main>
+    <footer class="auth-footer">MyPAWS Redo · Unofficial CSUSB student project</footer>
 </body>
 </html>

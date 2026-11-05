@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="StudentShell.js" defer></script>
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, initial-scale=1">
@@ -166,30 +167,15 @@
   </style>
 
   <script src="DegreeAudit.js" defer></script>
+  <link rel="stylesheet" href="StudentShell.css">
 </head>
 
 <body>
-  <header>
-    
-<strong style="display: inline-flex; align-items: center; gap: 10px; font-family: Georgia, 'Times New Roman', serif; font-size: 26px;">
-  <img
-    src="/assets/mypaws-paw-icon.png"
-    alt=""
-    width="75"
-    height="75"
-    style="object-fit: contain; background: white; border-radius: 10px; padding: 0.005px;"
-  >
-  myPAWS REDO
-</strong>
-
-    <nav>
-      <a href="StudentDashboard.html">Dashboard</a>
-    </nav>
-  </header>
+  <header data-student-header></header>
 
   <main>
     <p class="muted">STUDENT PORTAL / DEGREE AUDIT</p>
-    <h1>My Degree Audit</h1>
+    <h1>My Degree Audit</h1><div class="portal-tools"><button type="button" data-print>Print / Save PDF</button><a href="RunDegreeAudit.html">Manage audits</a></div><aside class="portal-legend" aria-label="Requirement status legend"><span class="legend-complete">✓ Completed</span><span class="legend-progress">◷ In progress</span><span class="legend-needed">! Needs attention</span></aside>
 
     <section class="card">
       <h2 id="programTitle">Loading degree program...</h2>
@@ -241,8 +227,7 @@
 
     <p class="muted">
       Academic prototype using provided test data.
-      Requirement status codes are shown as recorded
-      until their meanings are verified.
+      Review remaining requirements and discuss any discrepancies with your advisor.
     </p>
   </main>
 </body>

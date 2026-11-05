@@ -81,7 +81,7 @@
 
           const link = document.createElement("a");
 
-      link.href = "/LoginUI/DegreeAudit.html";
+      link.href = "/LoginUI/DegreeAudit.html?auditId=" + encodeURIComponent(audit.id);
       link.textContent = "View Full Audit";
       link.style.display = "inline-block";
       link.style.marginTop = "12px";
@@ -100,25 +100,6 @@
           "Unable to load your dashboard. Please try again.";
       }
     }
-
-    $("logout").addEventListener("click", async () => {
-      try {
-        const response = await fetch("/api/auth/logout", {
-          method: "POST",
-          credentials: "same-origin"
-        });
-
-        if (!response.ok) {
-          throw new Error("Logout failed");
-        }
-
-        window.location.replace("/LoginUI/Main.html");
-
-      } catch (error) {
-        $("message").textContent =
-          "Unable to log out. Please try again.";
-      }
-    });
 
 async function loadAcademicProgress() {
     try {
