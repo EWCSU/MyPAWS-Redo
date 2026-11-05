@@ -1,0 +1,230 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="StudentShell.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MyCAPS | MyPAWS Redo</title>
+<link rel="icon" type="image/png" href="/assets/mypaws-paw-icon.png">
+
+  <style>
+
+.remove-course {
+  margin-top: 10px;
+  background: white;
+  color: #A11D25;
+  border: 1px solid #E5B8BD;
+  padding: 7px 14px;
+  font-size: 13px;
+}
+
+.remove-course:hover {
+  background: #FDECEC;
+}
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #F5F7FB;
+      color: #192B40;
+    }
+
+    header {
+      background: #003C69;
+      color: white;
+      padding: 22px 6%;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    header a {
+      color: white;
+      text-decoration: none;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 24px;
+    }
+
+    .muted { color: #64748B; }
+
+    .card {
+      background: white;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #CBD5E1;
+      border-radius: 7px;
+      font: inherit;
+      background: white;
+      color: #192B40;
+    }
+
+    .field { margin-bottom: 16px; }
+
+    button {
+      background: #003C69;
+      color: white;
+      padding: 12px 22px;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font: inherit;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .term-card {
+      border: 1px solid #E2E8F0;
+      border-radius: 9px;
+      padding: 18px;
+      margin-top: 16px;
+    }
+
+    .planned-course {
+      padding: 12px 0;
+      border-top: 1px solid #E2E8F0;
+    }
+
+    .planned-course p { margin: 6px 0; }
+
+    #message { min-height: 24px; }
+
+    @media (max-width: 600px) {
+      .form-grid { grid-template-columns: 1fr; }
+      main { margin-top: 24px; }
+    }
+    .cancel-edit {
+  background: #E2E8F0;
+  color: #192B40;
+  margin-left: 8px;
+}
+
+.cancel-edit:hover {
+  background: #CBD5E1;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.edit-course {
+  margin-top: 10px;
+  margin-right: 8px;
+  background: #E8F1FD;
+  color: #195AA5;
+  border: 1px solid #B8D1F0;
+}
+  </style>
+
+  <script src="MyCAPS.js" defer></script>
+  <link rel="stylesheet" href="StudentShell.css">
+</head>
+
+<body>
+  
+<header data-student-header></header>
+
+
+  <main>
+    <p class="muted">STUDENT PORTAL / ACADEMIC PLANNING</p>
+    <h1>MyCAPS Academic Planner</h1><div class="portal-tools"><button type="button" data-print>Print plan / Save PDF</button><a href="RemainingRequirements.html">Find courses for remaining requirements</a></div><section class="card"><h2>Your degree at a glance</h2><p id="planAuditSummary" role="status">Loading degree progress…</p><a href="DegreeAudit.html">Open full degree audit</a></section>
+    <p class="muted">
+      Create and organize your academic plan by semester.
+    </p>
+
+    <section class="card">
+      <h2>Add a Planned Course</h2>
+
+      <form id="planForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="courseCode">Course Code</label>
+            <input id="courseCode" maxlength="30"
+                   placeholder="e.g. CSE 5408" required>
+          </div>
+
+          <div class="field">
+            <label for="courseTitle">Course Title (optional)</label>
+            <input id="courseTitle" maxlength="200"
+                   placeholder="Course name">
+          </div>
+
+          <div class="field">
+            <label for="term">Semester</label>
+            <select id="term">
+              <option>Spring</option>
+              <option>Summer</option>
+              <option selected>Fall</option>
+              <option>Winter</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="year">Year</label>
+            <input id="year" type="number"
+                   min="2020" max="2100"
+                   value="2027" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="notes">Planning Notes (optional)</label>
+          <textarea id="notes" maxlength="500" rows="3"
+                    placeholder="Personal planning notes"></textarea>
+        </div>
+
+        <button id="saveButton" type="submit">
+          Add to My Plan
+        </button>
+	<button id="cancelEditButton"
+          type="button"
+          class="cancel-edit"
+        hidden>
+  Cancel Edit
+</button>
+      </form>
+
+      <p id="message" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="card">
+      <h2>My Saved Academic Plan</h2>
+      <p class="muted" id="courseCount">Loading...</p>
+      <div id="plannedCourses"></div>
+    </section>
+
+    <p class="muted">
+      MyCAPS is a demonstration planner. Planned courses
+      do not represent official enrollment or approval
+      toward graduation.
+    </p>
+  </main>
+</body>
+</html>

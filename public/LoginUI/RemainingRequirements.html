@@ -1,0 +1,205 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="StudentShell.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Remaining Requirements | MyPAWS Redo</title>
+<link rel="icon" type="image/png" href="/assets/mypaws-paw-icon.png">
+
+  <style>
+
+.plan-option {
+  display: inline-block;
+  margin-top: 6px;
+  color: #0065BD;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.plan-option:hover {
+  color: #003C69;
+}
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #F5F7FB;
+      color: #192B40;
+      line-height: 1.5;
+    }
+
+    header {
+      background: #003C69;
+      color: white;
+      padding: 20px 6%;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    header a {
+      color: white;
+      text-decoration: none;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 24px;
+    }
+
+    h1 { margin-bottom: 8px; }
+    h2 { font-size: 20px; }
+    h3 { font-size: 16px; }
+
+    .muted { color: #64748B; }
+
+    .card {
+      background: white;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 18px;
+    }
+
+    .requirement {
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      background: white;
+      padding: 18px;
+      margin-bottom: 12px;
+    }
+
+    .subrequirement {
+      border-top: 1px solid #E2E8F0;
+      padding: 16px 0;
+      margin-top: 14px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    summary:hover { color: #0065BD; }
+
+    .status {
+      display: inline-block;
+      margin: 10px 0;
+      padding: 5px 10px;
+      background: #FDECEC;
+      color: #A11D25;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status.pending {
+      background: #E8F1FD;
+      color: #195AA5;
+    }
+    .status.unknown { background: #f1f5f9; color: #475569; }
+
+    .patterns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .pattern {
+      display: inline-block;
+      background: #EFF4FA;
+      border: 1px solid #D8E5F2;
+      color: #164776;
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .note {
+      border-left: 4px solid #0065BD;
+      background: #E8F2FC;
+      padding: 16px;
+      border-radius: 6px;
+      margin: 24px 0;
+    }
+
+    .error { color: #B42318; }
+
+    @media (max-width: 650px) {
+      header { padding: 16px 24px; }
+      main { margin-top: 24px; }
+      .card { padding: 18px; }
+    }
+
+.pattern {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.course-match {
+  font-size: 11px;
+  font-weight: 400;
+  color: #475569;
+  white-space: normal;
+}
+
+    .requirement.satisfied { border-left: 6px solid #176534; background: #f0faf2; }
+    .requirement.not-satisfied { border-left: 6px solid #a11d25; background: #fff5f5; }
+    .requirement.pending { border-left: 6px solid #195aa5; background: #f2f7ff; }
+    .requirement.unknown { border-left: 6px solid #64748b; }
+    .warning { color: #854d0e; background: #fef9c3; padding: 10px; }
+  </style>
+  <script src="RemainingRequirements.js" defer></script>
+  <link rel="stylesheet" href="StudentShell.css">
+</head>
+<body>
+  <header data-student-header></header>
+
+  <main>
+    <p class="muted">STUDENT PORTAL / ACADEMIC PLANNING</p>
+    <h1>Remaining Requirements</h1>
+    <p class="muted" id="programInfo">
+      Loading academic requirements...
+    </p>
+
+    <div class="note">
+      <strong>Course Options Notice</strong>
+      <p>
+        Course patterns shown here come from the
+        imported degree audit. They are not verified
+        enrollment recommendations. Prerequisites,
+        previous coursework, and restrictions may apply.
+        This is an imported snapshot. Later registrations, waivers,
+        substitutions, or added minors require an updated audit import.
+      </p>
+    </div>
+
+    <section class="card">
+      <h2>Requirements Overview</h2>
+      <p id="requirementCount" class="muted">Loading...</p>
+      <p class="muted">
+        Includes unmet, in-progress, and unverified academic requirements, including university, GPA, and residency requirements. Hidden and optional source records are excluded.
+      </p>
+    </section>
+
+    <section aria-labelledby="listHeading">
+      <h2 id="listHeading">Requirements & Course Options</h2>
+      <p class="muted">
+        Expand each requirement to explore its source rules.
+      </p>
+      <div id="requirementList" aria-live="polite">
+        Loading requirements...
+      </div>
+    </section>
+  </main>
+</body>
+</html>

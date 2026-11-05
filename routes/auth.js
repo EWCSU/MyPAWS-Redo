@@ -7,7 +7,10 @@ const { PrismaClient } = require('@prisma/client');
 const requireAuth = require('../middleware/requireAuth');
 
 const crypto = require('crypto'); // built into node tht gives us a random # generator
-const { sendVerificationCode } = require('../utils/mailer'); // imports the email function
+const {
+    sendVerificationCode,
+    sendPasswordResetLink
+} = require('../utils/mailer'); // imports the email function
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -36,6 +39,14 @@ function toEmail(username) {
   const value = String(username || '').trim().toLowerCase();
   return value.includes('@') ? value : `${value}@${STUDENT_EMAIL_DOMAIN}`;
 }
+const resetLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 5,
+    message: {
+        error: "Too many password reset requests. Please try again later."
+    }
+});
+
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -55,6 +66,44 @@ router.post('/login', loginLimiter, async (req, res) => {
     const email = toEmail(username);
     const user = await prisma.user.findUnique({ where: { email } });
     
+router.post('/register', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password || !isValidEmail(email)) {
+      return res.status(400).json({ error: 'A valid email and password are required.' });
+    }
+    if (!isValidPassword(password)) {
+      return res.status(400).json({ error: 'Password must be at least 8 characters and include a letter and a number.' });
+    }
+
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) {
+      return res.status(409).json({ error: 'Unable to create account with those details.' });
+    }
+
+    const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+
+    const user = await prisma.user.create({
+      data: { email, passwordHash },
+      select: { id: true, email: true, createdAt: true },
+    });
+
+    return res.status(201).json({ user });
+  } catch (err) {
+    console.error('Register error:', err);
+    return res.status(500).json({ error: 'Something went wrong.' });
+  }
+});
+
+router.post('/login', loginLimiter, async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Invalid credentials.' });
+    }
+
+    const user = await prisma.user.findUnique({ where: { email } });
     const genericFail = () => res.status(401).json({ error: 'Invalid credentials.' });
 
     if (!user) return genericFail();
@@ -134,7 +183,16 @@ router.post('/verify-code', verifyLimiter, async (req, res) => {
       data: { twoFactorCode: null, twoFactorExpires: null },
     });
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '2h' });
+    
+const token = jwt.sign(
+    {
+        userId: user.id,
+        sessionVersion: user.sessionVersion
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "2h" }
+);
+
 
     res.cookie('token', token, {
       httpOnly: true,
@@ -143,7 +201,13 @@ router.post('/verify-code', verifyLimiter, async (req, res) => {
       maxAge: 2 * 60 * 60 * 1000,
     });
 
-    return res.json({ user: { id: user.id, email: user.email } });
+    return res.json({
+  user: {
+    id: user.id,
+    email: user.email,
+    role: user.role
+  }
+});
   } catch (err) {
     console.error('Verify error:', err);
     return res.status(500).json({ error: 'Something went wrong.' });
@@ -158,9 +222,167 @@ router.post('/logout', (req, res) => {
 router.get('/me', requireAuth, async (req, res) => {
   const user = await prisma.user.findUnique({
     where: { id: req.userId },
-    select: { id: true, email: true, createdAt: true },
+    select: {
+  id: true,
+  email: true,
+  role: true,
+  createdAt: true
+},
   });
   return res.json({ user });
+});
+
+router.post("/forgot-password", resetLimiter, async (req, res) => {
+    const message =
+        "If an account exists with this email, a password reset link will be sent.";
+
+    const email = typeof req.body?.email === "string"
+        ? req.body.email.trim().toLowerCase()
+        : "";
+
+    res.set("Cache-Control", "no-store");
+
+    if (!isValidEmail(email)) {
+        return res.json({ message });
+    }
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { email },
+            select: { id: true }
+        });
+
+        if (user) {
+            const token = crypto.randomBytes(32).toString("hex");
+
+            const tokenHash = crypto
+                .createHash("sha256")
+                .update(token)
+                .digest("hex");
+
+            await prisma.user.update({
+                where: { id: user.id },
+                data: {
+                    passwordResetTokenHash: tokenHash,
+                    passwordResetExpires: new Date(
+                        Date.now() + 10 * 60 * 1000
+                    )
+                }
+            });
+
+            try {
+                await sendPasswordResetLink(email, token);
+            } catch (emailError) {
+                console.error(
+                    "Password reset email failed:",
+                    emailError
+                );
+
+                await prisma.user.updateMany({
+                    where: {
+                        id: user.id,
+                        passwordResetTokenHash: tokenHash
+                    },
+                    data: {
+                        passwordResetTokenHash: null,
+                        passwordResetExpires: null
+                    }
+                });
+            }
+        }
+
+        return res.json({ message });
+
+    } catch (error) {
+        console.error("Forgot password error:", error);
+
+        return res.status(500).json({
+            error: "Unable to process the request right now."
+        });
+    }
+});
+
+router.post("/reset-password", resetLimiter, async (req, res) => {
+    const token = typeof req.body?.token === "string"
+        ? req.body.token.trim()
+        : "";
+
+    const password = req.body?.password;
+
+    res.set("Cache-Control", "no-store");
+
+    // Validate the token format and new password.
+    if (!/^[a-f0-9]{64}$/.test(token)) {
+        return res.status(400).json({
+            error: "Invalid or expired reset link."
+        });
+    }
+
+    if (!isValidPassword(password)) {
+        return res.status(400).json({
+            error: "Password must contain at least 8 characters, one letter, and one number."
+        });
+    }
+
+    try {
+        const tokenHash = crypto
+            .createHash("sha256")
+            .update(token)
+            .digest("hex");
+
+        const passwordHash = await bcrypt.hash(
+            password,
+            SALT_ROUNDS
+        );
+
+        // Update only if the reset token is valid and unexpired.
+        const result = await prisma.user.updateMany({
+            where: {
+                passwordResetTokenHash: tokenHash,
+                passwordResetExpires: {
+                    gt: new Date()
+                }
+            },
+            
+		data: {
+    			passwordHash,
+    			passwordResetTokenHash: null,
+    			passwordResetExpires: null,
+    			failedLoginAttempts: 0,
+    			lockedUntil: null,
+    			twoFactorCode: null,
+    			twoFactorExpires: null,
+    			sessionVersion: {
+        		  increment: 1
+    		       }
+		}
+
+        });
+
+        if (result.count !== 1) {
+            return res.status(400).json({
+                error: "Invalid or expired reset link."
+            });
+        }
+
+        // Clear the current browser's login cookie.
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax"
+        });
+
+        return res.json({
+            message: "Password reset successful. Please log in again."
+        });
+
+    } catch (error) {
+        console.error("Reset password error:", error);
+
+        return res.status(500).json({
+            error: "Unable to reset password."
+        });
+    }
 });
 
 module.exports = router;

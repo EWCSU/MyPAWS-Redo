@@ -3,38 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My PAWS REDO MAIN</title>
-    <link rel="icon"type="image/png"  href="CSUSB-logo-2.png">
-    <link rel="stylesheet" href="Main.css">
+    <title>MyPAWS Redo | Login</title>
+    <link rel="icon" type="image/png" href="/assets/mypaws-paw-icon.png">
+    <link rel="stylesheet" href="StudentShell.css">
+    <link rel="stylesheet" href="AccountShell.css">
+    <script src="AccountShell.js" defer></script>
+    <script src="Login.js" defer></script>
 </head>
 <body>
-    <div class="box">
-              <!--<h1><img src="C:\Users\alvar\OneDrive\Desktop\Paws UI\MyPAWsREDO.jpg" alt="PAWphoto" usemap="#PAW" height="300" width="350"></h1>-->
-      <img src="MyPAWsREDO.jpg" usemap="#image-map">
-        <map name="image-map">
-            <area target="" alt="Home" title="Home" href="https://www.csusb.edu/" coords="0,2,338,428" shape="rect">
-            <area target="" alt="" title="" href="" coords="" shape="0">
-        </map>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="account-header"><a class="account-brand" href="Main.html"><img src="/assets/mypaws-paw-icon.png" alt="" width="52" height="52">myPAWS <small>REDO</small></a><span>Account access</span></header>
+<main class="auth-main" id="main-content" tabindex="-1"><div class="auth-card">
+        <div class="login-identity">
+            <img class="login-logo" src="/assets/mypaws-logo.png" alt="myPAWS Redo" fetchpriority="high">
+            <p class="eyebrow">Welcome to MyPAWS</p>
+        </div>
+        <h1>Sign in</h1>
+        <p>Access your academic progress and degree audit.</p>
 
-        <form class="Input-form" id="loginForm">
-            <label class="label"> ID: </label>
-            <input class="Textbox1" id="username" type="text" autocomplete="username" placeholder="###########" required>
-            <label class="label">Password:</label>
-            <input class="Textbox2" id="password" type="password" placeholder="*********" required>
-            <button class="Login" type="submit">Login</button>
+        <form id="loginForm" class="Input-form">
+            <label class="label" for="email">Email</label>
+            <input
+                id="email"
+                class="Textbox1"
+                type="email"
+                autocomplete="username"
+                placeholder="Enter your test account email"
+                required
+            >
+
+            <label class="label" for="password">Password</label>
+            <input
+                id="password"
+                class="Textbox2"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Enter your password"
+                required
+            >
+		
+	<p class="forgot-password-link">
+   	 <a href="/LoginUI/ForgotPassword.html">
+        	Forgot Password?
+    	 </a>
+       </p>
+
+            <button class="Login" type="submit">
+                Login
+            </button>
         </form>
 
-        <form class="Input-form" id="codeForm" style="display:none;">
-            <label class="label">Verification code:</label>
-            <input class="Textbox1" id="code" type="text" inputmode="numeric" maxlength="6" placeholder="6-digit code" required>
-            <button class="Login" type="submit">Verify</button>
+        <form id="codeForm" class="Input-form"
+              hidden>
+            <h2>Email Verification</h2>
+            <p>Enter the six-digit code sent to your email.</p>
+
+            <label class="label" for="code">
+                Verification Code
+            </label>
+            <input
+                id="code"
+                type="text"
+                inputmode="numeric"
+                autocomplete="one-time-code"
+                pattern="[0-9]{6}"
+                maxlength="6"
+                placeholder="000000"
+                required
+            >
+
+            <button class="Login" type="submit">
+                Verify Code
+            </button>
+            <p><a href="Main.html">Use a different account</a></p>
         </form>
 
-        <p id="message"></p>
-
-       <!-- <a href="https://www.csusb.edu/"><button class="Cancel">Cancel</button></a> -->
-        <a href="#" target="_blank"><button class="Login">Forgot Password?</button></a>
-    </div>
-    <script src="Login.js" defer></script>
+        <p id="message" role="status" aria-live="polite"></p>
+    </div></main>
+    <footer class="auth-footer">MyPAWS Redo · Unofficial CSUSB student project</footer>
 </body>
 </html>
