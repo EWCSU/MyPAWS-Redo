@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My PAWS REDO MAIN</title>
-    <link rel="icon"type="image/png"  href="CSUSB-logo-2.png">
+    <link rel="icon"type="image/png"  href="MyPAWsREDO.jpg">
     <link rel="stylesheet" href="Main.css">
 </head>
 <body>
@@ -16,30 +16,15 @@
             <area target="" alt="" title="" href="" coords="" shape="0">
         </map>
         
-        <form class="Input-form">
+        <form id="loginForm" class="Input-form">
             <label class="label"> ID: </label>
-            <input class="Textbox1" type="text" placeholder="###########">
-            <label class="label">Password:</label>
+            <input id="username" class="Textbox1" type="text" placeholder="###########">
+            <label id="password" class="label">Password:</label>
             <input class="Textbox2" type="password" placeholder="*********">
-            <a href="#"><button class="Login" >Login</button></a>
+            <!-- <a href="https://www.csusb.edu/"><button class="Cancel">Cancel</button></a> -->
+            <button class="Login" id="loginButton" type="submit">Login</button>
+            <a href="#" target="_blank"><button class="Login">Forgot Password?</button></a>
         </form>
-       <!-- <a href="https://www.csusb.edu/"><button class="Cancel">Cancel</button></a> -->
-        <a href="#" target="_blank"><button class="Login">Forgot Password?</button></a>
-        <form id="codeForm" style="display: none;">
-            <label>Verification Code:</label>
-
-            <input
-                id="code"
-                type="text"
-                maxlength="6"
-                placeholder="123456"
-            >
-
-            <button type="submit">
-                Verify
-            </button>
-        </form>
-    
     </div>
     <script src="Login.js" defer></script>
 </body>

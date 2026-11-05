@@ -1,0 +1,107 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #6e91dc;
+    height: 100vh;
+}
+.header{
+            grid-area: header;
+            color: #6e91dc;
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            align-items: center;
+            flex-direction:row;
+            list-style-type: none;
+            display: flex;  
+            justify-content: space-around; 
+}
+.main1{
+    background-color: white;
+    grid-area: main;
+}
+.footer{
+    background-color: white;
+    grid-area: footer;
+}
+.container{
+
+    display: grid;
+    height: 100vh;
+    grid-template-areas: 'header header header' 'main main main' 'footer footer footer';
+    grid-template-columns: 1fr 2fr 2fr;
+    grid-template-rows: 10vh 1fr 10vh;
+}
+.grid-container2{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 400px 400px;
+    background-color: white;
+    place-items: center;
+    margin: 100px;
+}
+.inner-container1{
+    display: flex;
+    justify-content: center; /* Aligns horizontally */
+    background-color:#6e91dc;
+    width: 400px;         /* Sets the width of the box */
+    height: 500px;        /* Sets the height of the box */
+    border: 2px solid #333;    /* Adds a solid dark border around the box */
+    padding: 15px;        /* Adds space inside the box (between text and border) */
+    
+}
+.inner-container2{
+    display: flex;
+    justify-content: center; /* Aligns horizontally */
+    background-color:#6e91dc;
+    width: 400px;         /* Sets the width of the box */
+    height: 500px;        /* Sets the height of the box */
+    border: 2px solid #333;    /* Adds a solid dark border around the box */
+    padding: 20px;        /* Adds space inside the box (between text and border) */
+    margin: 15px;         /* Adds space outside the box (separating it from other elements) */
+}
+.GeneralInfo{
+    /* Frame 1321317462 */
+
+box-sizing: border-box;
+position: absolute;
+width: 724px;
+height: 109px;
+left: 42px;
+top: 214px;
+background: rgba(206, 206, 206, 0.25);
+border: 3px solid #000000;
+}
+.MiniDegreeAudit{
+    /* Frame 1321317461 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 466px;
+height: 883px;
+right: 5px;
+top: 200px;
+
+background: rgba(206, 206, 206, 0.25);
+border: 3px solid #000000;
+
+}
+.SemesterPlanner{
+    /* Frame 1321317463 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 782px;
+height: 1059px;
+left: 9px;
+bottom: -17px;
+
+background: rgba(206, 206, 206, 0.25);
+border: 3px solid #000000;
+
+}

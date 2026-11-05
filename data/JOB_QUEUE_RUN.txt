@@ -1,0 +1,2 @@
+"INT_SEQ_NO"	"INSTIDQ"	"INSTID"	"INSTCD"	"JOBID"	"USERID"	"STUNO"	"DPROG"	"DPMASK"	"CATLYT"	"DPTITLE1"	"DPTITLE2"	"WEBTITLE"	"DETAIL_SEQ_NO"	"RUNDATE"	"STUNAME"
+74279555	"73"	"001142  "	"   "	"2629315171349814"	"006348195                     "	"008319994    "	"COEN-BS        "	"               "	"20244 "	"COMPUTER ENGINEERING (CNS)"	"BACHELOR OF SCIENCE                                              "	"Computer Engineering--BS"	-1	20-OCT-26	"Marwaha, Jagjit S"
