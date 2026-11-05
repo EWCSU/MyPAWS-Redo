@@ -667,10 +667,12 @@ router.get("/remaining-course-options", async (req, res) => {
         const normalize = value =>
             String(value ?? "").trim().toUpperCase();
 
-        function isCourseLike(value) {
-            return /^[A-Z]{2,5}\s*\d[A-Z0-9]{2,5}$/
-                .test(normalize(value));
-        }
+        
+function isCourseLike(value) {
+    return /^[A-Z]{2,5}\s*\d{4}[A-Z]?$/
+        .test(normalize(value));
+}
+
 
         function uniquePatterns(rules, type) {
             return [...new Set(

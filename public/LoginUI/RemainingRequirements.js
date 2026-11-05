@@ -20,6 +20,16 @@ function getCourseHistoryStatus(pattern) {
     return "On record: In Progress";
   }
 
+if (
+  records.length > 0 &&
+  records.every(course =>
+    String(course.grade ?? "").trim().toUpperCase() === "F"
+  )
+) {
+  return "On record: F grade (retake may be needed)";
+}
+
+
   if (records.some(course =>
     /^(A|B|C|D|F)[+-]?$/.test(
       String(course.grade ?? "").toUpperCase()
@@ -110,12 +120,18 @@ const standardCourseCode =
     String(pattern).trim().toUpperCase()
   );
 
+
 if (
   allowPlanning &&
   standardCourseCode &&
-  getCourseHistoryStatus(pattern) ===
-    "No matching coursework record"
+  (
+    getCourseHistoryStatus(pattern) ===
+      "No matching coursework record" ||
+    getCourseHistoryStatus(pattern) ===
+      "On record: F grade (retake may be needed)"
+  )
 ) {
+
   const planLink = document.createElement("a");
 
   planLink.href =
@@ -148,6 +164,20 @@ function createSubrequirement(sub) {
 
   details.appendChild(summary);
   details.appendChild(createStatus(sub.statusCode));
+
+if (
+  !(sub.aCodedCoursePatterns || []).length &&
+  !(sub.rCodedCoursePatterns || []).length
+) {
+  details.appendChild(makeElement(
+    "p",
+    "muted",
+    "Needs review: No recognizable course options are listed " +
+    "for this requirement. Check the full degree audit " +
+    "or consult an academic advisor."
+  ));
+}
+
 
   details.appendChild(createPatternSection(
   "A-coded source course patterns",
