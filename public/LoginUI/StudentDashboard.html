@@ -6,6 +6,8 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
   <title>Student Dashboard | MyPAWS Redo</title>
+<link rel="icon" type="image/png" href="/assets/mypaws-paw-icon.png">
+
 
   <style>
     :root {
@@ -37,11 +39,14 @@
       gap: 20px;
     }
 
-    .brand {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
+    
+.brand {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
 
     .brand span { color: #BBDFFF; }
 
@@ -159,7 +164,20 @@
 
 <body>
   <header>
-    <div class="brand">my<span>PAWS</span> REDO</div>
+    
+
+<div class="brand">
+  <img
+    src="/assets/mypaws-paw-icon.png"
+    alt=""
+    width="75"
+    height="75"
+    style="vertical-align: middle; object-fit: contain; margin-right: 8px; background: white; border-radius: 10px; padding: 0.005px;"
+  >
+  my<span>PAWS</span> REDO
+</div>
+
+
     <button id="logout" class="logout" type="button">
       Log Out
     </button>
@@ -225,51 +243,51 @@
     Based on your latest degree audit.
   </p>
 
-  <div class="grid">
+
+<div class="grid">
+
+  <!-- Left Column: GPA -->
+  <div style="display: grid; gap: 24px;">
 
     <div>
       <div class="field-label">Overall GPA</div>
-      <p class="field-value" id="cumulativeGPA">
-        Loading...
-      </p>
+      <p class="field-value" id="cumulativeGPA">Loading...</p>
     </div>
 
-<div>
-  <div class="field-label">CSUSB GPA</div>
-  <p class="field-value" id="csusbGPA">
-    Loading...
-  </p>
-</div>
+    <div>
+      <div class="field-label">CSUSB GPA</div>
+      <p class="field-value" id="csusbGPA">Loading...</p>
+    </div>
 
-<div>
-  <div class="field-label">Major GPA</div>
-  <p class="field-value" id="majorGPA">
-    Loading...
-  </p>
-</div>
+    <div>
+      <div class="field-label">Major GPA</div>
+      <p class="field-value" id="majorGPA">Loading...</p>
+    </div>
+
+  </div>
+
+  <!-- Right Column: Units -->
+  <div style="display: grid; gap: 24px;">
 
     <div>
       <div class="field-label">Required Units</div>
-      <p class="field-value" id="requiredUnits">
-        Loading...
-      </p>
+      <p class="field-value" id="requiredUnits">Loading...</p>
     </div>
 
     <div>
       <div class="field-label">Recorded Units</div>
-      <p class="field-value" id="recordedUnits">
-        Loading...
-      </p>
+      <p class="field-value" id="recordedUnits">Loading...</p>
     </div>
 
     <div>
       <div class="field-label">Additional Units Needed</div>
-      <p class="field-value" id="remainingUnits">
-        Loading...
-      </p>
+      <p class="field-value" id="remainingUnits">Loading...</p>
     </div>
 
   </div>
+
+</div>
+
 
   <p class="field-label">
     Figures reflect the imported academic audit,
