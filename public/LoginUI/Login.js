@@ -33,7 +33,7 @@ loginForm.addEventListener("submit", async (event) => {
     loginForm.setAttribute('aria-busy', 'true');
     messageEl.textContent = "Signing in…";
 
-    const email = document.getElementById("email")
+    const username = document.getElementById("username")
         .value.trim();
 
     const password = document.getElementById("password")
@@ -41,7 +41,7 @@ loginForm.addEventListener("submit", async (event) => {
 
     try {
         const result = await postJSON("/api/auth/login", {
-            email,
+            username,
             password
         });
 

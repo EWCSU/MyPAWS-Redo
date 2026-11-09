@@ -56,19 +56,10 @@ function isValidPassword(password) {
 }
 
 
-router.post('/login', loginLimiter, async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    if (!username || !password) {
-      return res.status(400).json({ error: 'Invalid credentials.' });
-    }
-
-    const email = toEmail(username);
-    const user = await prisma.user.findUnique({ where: { email } });
     
 router.post('/register', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, username, password } = req.body;
 
     if (!email || !password || !isValidEmail(email)) {
       return res.status(400).json({ error: 'A valid email and password are required.' });
@@ -98,12 +89,20 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', loginLimiter, async (req, res) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { email, username, password } = req.body;
+    const identifier = String(email || username || '').trim();
+    if (!identifier || !password) {
       return res.status(400).json({ error: 'Invalid credentials.' });
     }
-
-    const user = await prisma.user.findUnique({ where: { email } });
+    // to match accounts email or the student # linked
+    const user = await prisma.user.findFirst({ 
+      where: { 
+        OR: [
+          { email: toEmail(identifier) },
+          { studentRecord: { studentNumber: identifier } },
+        ],
+      },
+    })
     const genericFail = () => res.status(401).json({ error: 'Invalid credentials.' });
 
     if (!user) return genericFail();
@@ -200,6 +199,11 @@ const token = jwt.sign(
       sameSite: 'lax',
       maxAge: 2 * 60 * 60 * 1000,
     });
+    console.log('VERIFIED USER:', {
+    id: user.id,
+    email: user.email,
+    role: user.role
+});
 
     return res.json({
   user: {
@@ -354,10 +358,9 @@ router.post("/reset-password", resetLimiter, async (req, res) => {
     			twoFactorExpires: null,
     			sessionVersion: {
         		  increment: 1
-    		       }
+    		  }
 		}
-
-        });
+});
 
         if (result.count !== 1) {
             return res.status(400).json({
