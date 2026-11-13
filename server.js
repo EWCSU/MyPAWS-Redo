@@ -14,7 +14,17 @@ const studentRoutes = require("./routes/student");
 const mycapsRoutes = require("./routes/mycaps");
 const adminRoutes = require("./routes/admin");
 
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        "upgrade-insecure-requests": null,
+      },
+    },
+    hsts: false,
+  })
+);
 app.use(cors({
   origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
   credentials: true,
