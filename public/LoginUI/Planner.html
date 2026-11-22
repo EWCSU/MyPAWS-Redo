@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="StudentShell.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Term Planner | MyPAWS Redo</title>
+  <link rel="icon" type="image/png" href="/assets/mypaws-paw-icon.png">
+  <link rel="stylesheet" href="StudentShell.css">
+  <link rel="stylesheet" href="Planner.css">
+</head>
+<body>
+  <header data-student-header></header>
+
+  <main class="planner-page">
+    <p class="muted">STUDENT PORTAL / ACADEMIC PLANNING</p>
+    <h1>Term Planner</h1>
+    <div class="portal-tools">
+      <button type="button" data-print>Print plan / Save PDF</button>
+      <a href="MyCAPS.html">Classic list view</a>
+    </div>
+    <p class="muted">
+      Add the terms you want to plan, then drag courses from
+      &ldquo;Courses you still need&rdquo; into a term. You can also drag a planned
+      course to another term, or back to the left panel to remove it. On a phone or
+      with a keyboard, use the menu on each course instead of dragging.
+    </p>
+    <p id="message" role="status" aria-live="polite"></p>
+
+    <div class="planner-layout">
+      <aside class="card planner-bank" id="bank" aria-label="Courses you still need">
+        <h2>Courses you still need</h2>
+        <label for="bankSearch" class="sr-only">Filter courses</label>
+        <input id="bankSearch" type="search" placeholder="Filter by course code" autocomplete="off">
+        <div id="bankList">Loading courses...</div>
+
+        <details class="custom-course">
+          <summary>Add a course that is not listed</summary>
+          <label for="customCode">Course code</label>
+          <input id="customCode" maxlength="30" placeholder="e.g. ART 2000" autocomplete="off">
+          <button type="button" id="customButton">Add to the list</button>
+        </details>
+        <p class="drop-hint" id="bankDropHint">Drop a planned course here to remove it from your plan.</p>
+      </aside>
+
+      <section class="planner-board" aria-label="Your terms">
+        <form id="termForm" class="card term-form">
+          <div class="field">
+            <label for="termName">Semester</label>
+            <select id="termName">
+              <option>Winter</option>
+              <option>Spring</option>
+              <option>Summer</option>
+              <option selected>Fall</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="termYear">Year</label>
+            <input id="termYear" type="number" min="2020" max="2100" value="2027" required>
+          </div>
+          <button type="submit" id="addTermButton">Add term</button>
+        </form>
+
+        <div id="terms" class="terms-grid">Loading your plan...</div>
+      </section>
+    </div>
+
+    <p class="muted">
+      The planner is a demonstration tool. Planned courses are not official enrollment,
+      and prerequisite checks cover only some courses. Confirm everything with your advisor.
+    </p>
+  </main>
+
+  <script src="Planner.js" defer></script>
+</body>
+</html>

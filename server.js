@@ -14,6 +14,8 @@ app.set('trust proxy', 1)
 const studentRoutes = require("./routes/student");
 const mycapsRoutes = require("./routes/mycaps");
 const adminRoutes = require("./routes/admin");
+const progressRoutes = require("./routes/progress");
+const plannerRoutes = require("./routes/planner");
 
 app.use(helmet());
 app.use(cors({
@@ -37,6 +39,8 @@ app.use('/api/auth', authRoutes);
 app.use("/api/student", studentRoutes);
 app.use("/api/mycaps", mycapsRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/progress", progressRoutes);
+app.use("/api/planner", plannerRoutes);
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {

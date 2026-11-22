@@ -144,6 +144,7 @@ model AcademicPlan {
   studentRecord   StudentRecord @relation(fields: [studentRecordId], references: [id])
 
   courses   PlannedCourse[]
+  terms PlannedTerm[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -167,4 +168,18 @@ model PlannedCourse {
   @@unique([academicPlanId, courseCode, term, year])
   @@index([academicPlanId, year, term])
   @@map("planned_courses")
+}
+
+// A semester the student chose to plan, kept even while it has no courses yet.
+model PlannedTerm {
+  id             String       @id @default(uuid())
+  academicPlanId String
+  academicPlan   AcademicPlan @relation(fields: [academicPlanId], references: [id], onDelete: Cascade)
+
+  term      String
+  year      Int
+  createdAt DateTime @default(now())
+
+  @@unique([academicPlanId, term, year])
+  @@map("planned_terms")
 }

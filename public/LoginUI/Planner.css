@@ -1,0 +1,56 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; background: #F5F7FB; color: #192B40; }
+main.planner-page { margin: 40px auto; padding: 0 24px; }
+.muted { color: #64748B; }
+.card { background: #fff; border: 1px solid #E2E8F0; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+label { display: block; font-weight: 600; margin-bottom: 8px; }
+input, select { width: 100%; padding: 11px; border: 1px solid #CBD5E1; border-radius: 7px; font: inherit; background: #fff; color: #192B40; }
+button { background: #003C69; color: #fff; padding: 12px 22px; border: none; border-radius: 7px; cursor: pointer; font: inherit; }
+button:disabled { opacity: 0.6; cursor: wait; }
+.portal-tools { display: flex; gap: 16px; align-items: center; margin: 12px 0 18px; }
+.portal-tools a { color: #003C69; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+#message { min-height: 1.4em; font-weight: 600; }
+.chip select, .planned-card select { width: 100%; padding: 5px; font-size: 12px; }
+.term-form .field input, .term-form .field select { width: 140px; }
+
+.planner-page { max-width: 1200px; }
+.planner-layout { display: grid; grid-template-columns: 330px minmax(0, 1fr); gap: 20px; align-items: start; }
+.planner-bank { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow-y: auto; }
+.planner-bank.drop-over { outline: 3px dashed #C0392B; outline-offset: -3px; background: #FFF5F5; }
+.drop-hint { color: #64748B; font-size: 13px; margin-top: 14px; }
+.bank-group { margin: 14px 0; }
+.bank-group h3 { font-size: 14px; margin: 0 0 8px; }
+.chip-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { display: flex; flex-direction: column; gap: 4px; background: #EEF4FB; border: 1px solid #BFD3EA; border-radius: 8px; padding: 8px 10px; font-size: 13px; cursor: grab; max-width: 100%; }
+.chip.planned { background: #F1F5F9; border-color: #CBD5E1; }
+.chip strong { font-size: 14px; }
+.chip small { color: #475569; }
+.chip select { font-size: 12px; padding: 4px; }
+.badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 10px; }
+.badge.ok { background: #E8F5E9; color: #176534; }
+.badge.warn { background: #FEF3C7; color: #854D0E; }
+.badge.unknown { background: #EEF1F5; color: #475569; }
+.custom-course { margin-top: 16px; }
+.custom-course input { margin: 8px 0; }
+.term-form { display: flex; gap: 14px; align-items: end; flex-wrap: wrap; }
+.term-form .field { margin: 0; min-width: 130px; }
+.terms-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.term { background: #fff; border: 2px solid #E2E8F0; border-radius: 12px; padding: 14px; min-height: 160px; }
+.term.drop-over { border-color: #195AA5; background: #F2F7FF; }
+.term-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+.term-head h3 { margin: 0; font-size: 17px; }
+.term-count { color: #64748B; font-size: 13px; }
+.term-remove { background: #fff; color: #A11D25; border: 1px solid #E5B8BD; padding: 4px 10px; font-size: 12px; }
+.term-empty { color: #94A3B8; font-size: 13px; border: 1px dashed #CBD5E1; border-radius: 8px; padding: 18px 10px; text-align: center; }
+.planned-card { background: #F5F7FB; border: 1px solid #E2E8F0; border-radius: 8px; padding: 10px; margin-bottom: 8px; cursor: grab; font-size: 14px; }
+.planned-card .row { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.planned-card select { margin-top: 8px; font-size: 12px; padding: 5px; }
+.planned-card button.x { background: none; color: #A11D25; border: none; padding: 2px 6px; font-size: 18px; line-height: 1; }
+.dragging { opacity: 0.45; }
+@media (max-width: 900px) {
+  .planner-layout { grid-template-columns: 1fr; }
+  .planner-bank { position: static; max-height: none; }
+}
+
+.dragging-planned .planner-bank input, .dragging-planned .planner-bank select, .dragging-planned .planner-bank summary, .dragging-planned .planner-bank button { pointer-events: none; }

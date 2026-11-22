@@ -6,6 +6,7 @@ const requireAuth = require("../middleware/requireAuth");
 const { organizeAudit, remainingRequirements, isAcademic } = require("../utils/auditLogic");
 const { checkPrerequisites } = require("../utils/prerequisites");
 const { auditGpa } = require("../utils/auditGpa");
+const { applyAuditReview } = require("../utils/auditReview");
 const router = express.Router();
 const prisma = new PrismaClient();
 
@@ -295,17 +296,20 @@ router.get("/academic-progress", async (req, res) => {
             });
         }
 
-        const audit = await prisma.degreeAudit.findFirst({
+        const rawAudit = await prisma.degreeAudit.findFirst({
             where: {
                 studentRecordId: user.studentRecord.id
             },
             orderBy: { runDate: "desc" },
             select: {
+                sourceAuditSequence: true,
+                programCode: true,
                 programTitle: true,
                 runDate: true,
                 requirements: {
                     select: {
                         sourceRtabx: true,
+                        satisfiedCode: true,
 			sourceName: true,
                         sourceData: true
                     }
@@ -313,12 +317,14 @@ router.get("/academic-progress", async (req, res) => {
             }
         });
 
-        if (!audit) {
+        if (!rawAudit) {
             return res.status(404).json({
                 error: "No degree audit found."
             });
         }
-
+        // Apply same reviewed corrections the audit page uses, so it matches
+        const audit = applyAuditReview(rawAudit);
+        
         const cumulative = audit.requirements.find(req =>
             String(req.sourceData?.CATEGORY ?? "")
                 .trim()

@@ -20,6 +20,7 @@
         <a href="Coursework.html">My coursework</a>
       </div></details>
       <a href="MyCAPS.html">myCAPs</a>
+      <a href="Planner.html">Term planner</a>
       <a href="https://mycoyote.csusb.edu/" target="_blank" rel="noopener noreferrer" title="Opens myCoyote in a new tab. Choose Academics, then Schedule Planner.">Schedule Builder <span aria-hidden="true">↗</span><span class="sr-only"> (myCoyote, new tab)</span></a>
       <a href="https://www.csusb.edu/advising/advising-tools/undergraduate-roadmaps" target="_blank" rel="noopener noreferrer">UGRD Roadmaps <span aria-hidden="true">↗</span><span class="sr-only"> (new tab)</span></a>
       <a href="https://www.csusb.edu/catalog" target="_blank" rel="noopener noreferrer">Course Catalog <span aria-hidden="true">↗</span><span class="sr-only"> (new tab)</span></a>
